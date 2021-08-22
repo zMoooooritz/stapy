@@ -13,7 +13,7 @@ class Post(object):
     """
 
     @staticmethod
-    def new_datastream(desc, op_id, s_id, t_id, key=None, value=None):
+    def new_datastream(desc, name, obv_type="", unit={"name": "", "symbol": "", "definition": ""}, op_id, s_id, t_id, key=None, value=None):
         """
         Create a new Datastream with the given data filled in
         key and value have to be of the same length and will be handled as map afterwards
@@ -27,13 +27,9 @@ class Post(object):
         """
         payload = {
             "description": desc,
-            "name": "PM2.5",
-            "observationType": "http://www.opengis.net/def/observationType/OGC-OM/2.0/OM_Measurement",
-            "unitOfMeasurement": {
-                "name": "microgram per cubic meter",
-                "symbol": "μg/m3",
-                "definition": "https://acronyms.thefreedictionary.com/ug%2Fm3"
-            },
+            "name": name,
+            "observationType": obv_type,
+            "unitOfMeasurement": unit,
             "ObservedProperty": {
                 "@iot.id": op_id
             },
@@ -46,10 +42,10 @@ class Post(object):
         }
         payload = Post.append_props(payload, "properties", key, value)
         path = Query(Entity.Datastreams.value).get_query()
-        return Post.create_entity(path, payload)
+        return Post.send_request(path, payload)
 
     @staticmethod
-    def new_full_datastream(desc, name, long_name, ob_prop, loc_type, loc_coords, key=None, value=None):
+    def new_full_datastream(desc, name, long_name, obv_type="", unit={"name": "", "symbol": "", "definition": ""}, ob_prop, loc_type, loc_coords, key=None, value=None):
         """
         Create a new Datastream with all required and associated entities that contain the given data
         key and value have to be of the same length and will be handled as map afterwards
@@ -68,7 +64,7 @@ class Post(object):
         o_id = Post.new_observed_property(ob_prop, ob_prop)
         s_id = Post.new_sensor(name, long_name)
 
-        return Post.new_datastream(desc, o_id, s_id, t_id, key, value)
+        return Post.new_datastream(desc, name, obv_type, unit, o_id, s_id, t_id, key, value)
 
     @staticmethod
     def new_observation(result, time, d_id, key=None, value=None):
@@ -92,7 +88,7 @@ class Post(object):
         }
         payload = Post.append_props(payload, "parameters", key, value)
         path = Query(Entity.Observations.value).get_query()
-        return Post.create_entity(path, payload)
+        return Post.send_request(path, payload)
 
     @staticmethod
     def new_observations(results, times, d_id, keys=None, values=None):
@@ -144,11 +140,11 @@ class Post(object):
         payload = {
             "name": name,
             "description": desc,
-            "encodingType": "http://www.opengis.net/doc/IS/SensorML/2.0",
+            "encodingType": "",
             "metadata": ""
         }
         path = Query(Entity.Sensors.value).get_query()
-        return Post.create_entity(path, payload)
+        return Post.send_request(path, payload)
 
     @staticmethod
     def new_observed_property(name, definition):
@@ -164,7 +160,7 @@ class Post(object):
             "description": "",
         }
         path = Query(Entity.ObservedProperties.value).get_query()
-        return Post.create_entity(path, payload)
+        return Post.send_request(path, payload)
 
     @staticmethod
     def new_location(name, description, loc_type, loc_coords):
@@ -186,7 +182,7 @@ class Post(object):
             }
         }
         path = Query(Entity.Locations.value).get_query()
-        return Post.create_entity(path, payload)
+        return Post.send_request(path, payload)
 
     @staticmethod
     def new_thing(name, description, loc_id):
@@ -207,7 +203,7 @@ class Post(object):
             ]
         }
         path = Query(Entity.Things.value).get_query()
-        return Post.create_entity(path, payload)
+        return Post.send_request(path, payload)
 
     @staticmethod
     def append_props(payload, name, key=None, value=None):
@@ -230,7 +226,7 @@ class Post(object):
         return payload
 
     @staticmethod
-    def create_entity(path, payload):
+    def send_request(path, payload):
         """
         Given a path and payload this method creates a HTTP-Post with the given data
         :param path: the SensorThingsAPI-URL to add the data to
