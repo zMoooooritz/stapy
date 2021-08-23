@@ -42,3 +42,19 @@ class Entity(Enum):
         if entity in singular_map:
             return singular_map[entity]
         return entity
+
+    @staticmethod
+    def get(entity):
+        switch = {
+            "datastream": Entity.Datastreams.value,
+            "location": Entity.Locations.value,
+            "observation": Entity.Observations.value,
+            "observedproperty": Entity.ObservedProperties.value,
+            "sensor": Entity.Sensors.value,
+            "things": Entity.Things.value
+        }
+        ent = entity.lower()
+        for key, value in switch.items():
+            if key == ent:
+                return Entity(value)
+        return None

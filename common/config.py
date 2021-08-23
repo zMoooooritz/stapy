@@ -42,3 +42,5 @@ class Config:
     def set(self, **kwargs):
         for k,v in kwargs.items():
             self.config["DEFAULT"][k] = str(v)
+
+config = Config()

@@ -3,9 +3,12 @@
 from sta.query import Query
 from sta.entity import Entity
 from sta.geo import GeoJSON
-from common.constants import API_URL
+from common.config import config
 
 import requests
+import logging
+
+logger = logging.getLogger('root')
 
 class Post(object):
     """
@@ -134,11 +137,11 @@ class Post(object):
                 for v_idx, value in enumerate(values[idx]):
                     payload["dataArray"][v_idx].append({key: value})
 
-        path = API_URL + "CreateObservations"
-        resp = requests.post(path, json=[payload])
+        path = config.get("API_URL") + "CreateObservations"
+        requests.post(path, json=[payload])
 
     @staticmethod
-    def new_sensor(name, desc):
+    def new_sensor(name, desc="", encodingType="", metadata=""):
         """
         Create a new Sensor with the given data filled in
         :param name: the name for the Sensor
@@ -148,14 +151,14 @@ class Post(object):
         payload = {
             "name": name,
             "description": desc,
-            "encodingType": "",
-            "metadata": ""
+            "encodingType": encodingType,
+            "metadata": metadata
         }
         path = Query(Entity.Sensors.value).get_query()
         return Post.send_request(path, payload), True
 
     @staticmethod
-    def new_observed_property(name, definition):
+    def new_observed_property(name, definition, description=""):
         """
         Create a new ObservedProperty with the given data filled in
         :param name: the name for the ObservedProperty
@@ -165,13 +168,13 @@ class Post(object):
         payload = {
             "name": name,
             "definition": definition,
-            "description": "",
+            "description": description,
         }
         path = Query(Entity.ObservedProperties.value).get_query()
         return Post.send_request(path, payload), True
 
     @staticmethod
-    def new_location(name, description, loc_type, loc_coords):
+    def new_location(name, description, loc_type, loc_coords, encodingType=""):
         """
         Create a new Location with the given data filled in
         :param name: the name for the Location
@@ -186,7 +189,7 @@ class Post(object):
         payload = {
             "name": name,
             "description": description,
-            "encodingType": "application/vnd.geo+json",
+            "encodingType": encodingType,
             "location": {
                 "type": loc_type,
                 "coordinates": loc_coords
@@ -215,6 +218,22 @@ class Post(object):
         }
         path = Query(Entity.Things.value).get_query()
         return Post.send_request(path, payload), True
+
+
+    @staticmethod
+    def new_entity(entity, *args):
+        switch = {
+            Entity.Datastreams: Post.new_datastream,
+            Entity.Locations: Post.new_location,
+            Entity.Observations: Post.new_observation,
+            Entity.ObservedProperties: Post.new_observed_property,
+            Entity.Sensors: Post.new_sensor,
+            Entity.Things: Post.new_thing
+        }
+        ent = Entity.get(entity)
+        if ent == None:
+            logger.error("Invalid entity provided: " + entity)
+        return switch.get(ent)(*args)
 
     @staticmethod
     def append_props(payload, name, key=None, value=None):

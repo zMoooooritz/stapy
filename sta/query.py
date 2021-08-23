@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-from common.constants import API_URL
 from sta.entity import Entity
+from common.config import config
 
 class Query(object):
     """
@@ -131,7 +131,7 @@ class Query(object):
         entity = self._build_entity()
         expand = "$" + self._build_expands()
         selector = _build_selector(self._selectors, "&")
-        query = API_URL + entity
+        query = config.get("API_URL") + entity
         if len(self._expands) > 0 and len(self._selectors) > 0:
             query += "?" + expand + "&" + selector
         elif len(self._expands) > 0:

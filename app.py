@@ -3,8 +3,9 @@
 from sta.entity import Entity
 from sta.post import Post
 from sta.query import Query, Expand
+from sta.json import JSONExtract
 from common.log import Log, custom_logger
-from common.config import Config
+from common.config import config
 
 import argparse
 
@@ -17,8 +18,6 @@ logger = None
 # TODO add CLI - Dialogs for add / del / get
 
 def run():
-
-    config = Config()
 
     parser = argparse.ArgumentParser(
         description="Access and modify data that is stored in a server that uses the SensorThings API (v1.1+)",
@@ -58,10 +57,10 @@ def run():
         logger.info("ending application")
         return True
 
-
-
-    # Add requests here
-    # Post().new_location("Test-Location", "Test-Location-Description", "Lul", [0])
+    if args.getr:
+        # path = Query(Entity.Locations.value).get_query()
+        # print(JSONExtract(path).select("name").get_data_sets())
+        pass
 
     config.save()
 
