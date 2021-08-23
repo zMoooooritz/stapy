@@ -26,6 +26,7 @@ def run():
     logger.info("starting application")
 
     # Add requests here
+    Post().new_location("Test-Location", "Test-Location-Description", "Lul", [0])
 
     logger.info("ending application")
     return True

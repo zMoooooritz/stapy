@@ -2,10 +2,10 @@
 
 from sta.query import Query
 from sta.entity import Entity
+from sta.geo import GeoJSON
 from common.constants import API_URL
 
 import requests
-
 
 class Post(object):
     """
@@ -13,7 +13,7 @@ class Post(object):
     """
 
     @staticmethod
-    def new_datastream(desc, name, obv_type="", unit={"name": "", "symbol": "", "definition": ""}, op_id, s_id, t_id, key=None, value=None):
+    def new_datastream(desc, name, obv_type, unit, op_id, s_id, t_id, key=None, value=None):
         """
         Create a new Datastream with the given data filled in
         key and value have to be of the same length and will be handled as map afterwards
@@ -42,10 +42,10 @@ class Post(object):
         }
         payload = Post.append_props(payload, "properties", key, value)
         path = Query(Entity.Datastreams.value).get_query()
-        return Post.send_request(path, payload)
+        return Post.send_request(path, payload), True
 
     @staticmethod
-    def new_full_datastream(desc, name, long_name, obv_type="", unit={"name": "", "symbol": "", "definition": ""}, ob_prop, loc_type, loc_coords, key=None, value=None):
+    def new_full_datastream(desc, name, long_name, obv_type, unit, ob_prop, loc_type, loc_coords, key=None, value=None):
         """
         Create a new Datastream with all required and associated entities that contain the given data
         key and value have to be of the same length and will be handled as map afterwards
@@ -59,12 +59,20 @@ class Post(object):
         :param value: a list of values that contain additional information of the Datastream
         :return: the ID of the newly created Datastream
         """
-        l_id = Post.new_location(name, long_name, loc_type, loc_coords)
-        t_id = Post.new_thing(name, long_name, l_id)
-        o_id = Post.new_observed_property(ob_prop, ob_prop)
-        s_id = Post.new_sensor(name, long_name)
+        l_id, err = Post.new_location(name, long_name, loc_type, loc_coords)
+        if err != True:
+            return -1, False
+        t_id, err = Post.new_thing(name, long_name, l_id)
+        if err != True:
+            return -1, False
+        o_id, err = Post.new_observed_property(ob_prop, ob_prop)
+        if err != True:
+            return -1, False
+        s_id, err = Post.new_sensor(name, long_name)
+        if err != True:
+            return -1, False
 
-        return Post.new_datastream(desc, name, obv_type, unit, o_id, s_id, t_id, key, value)
+        return Post.new_datastream(desc, name, obv_type, unit, o_id, s_id, t_id, key, value), True
 
     @staticmethod
     def new_observation(result, time, d_id, key=None, value=None):
@@ -88,7 +96,7 @@ class Post(object):
         }
         payload = Post.append_props(payload, "parameters", key, value)
         path = Query(Entity.Observations.value).get_query()
-        return Post.send_request(path, payload)
+        return Post.send_request(path, payload), True
 
     @staticmethod
     def new_observations(results, times, d_id, keys=None, values=None):
@@ -144,7 +152,7 @@ class Post(object):
             "metadata": ""
         }
         path = Query(Entity.Sensors.value).get_query()
-        return Post.send_request(path, payload)
+        return Post.send_request(path, payload), True
 
     @staticmethod
     def new_observed_property(name, definition):
@@ -160,7 +168,7 @@ class Post(object):
             "description": "",
         }
         path = Query(Entity.ObservedProperties.value).get_query()
-        return Post.send_request(path, payload)
+        return Post.send_request(path, payload), True
 
     @staticmethod
     def new_location(name, description, loc_type, loc_coords):
@@ -172,6 +180,9 @@ class Post(object):
         :param loc_coords: coordinates formatted according to the defined type in loc_type
         :return: the ID of the newly created Location
         """
+        if not GeoJSON.is_valid(loc_type, loc_coords):
+            return -1, False
+
         payload = {
             "name": name,
             "description": description,
@@ -182,7 +193,7 @@ class Post(object):
             }
         }
         path = Query(Entity.Locations.value).get_query()
-        return Post.send_request(path, payload)
+        return Post.send_request(path, payload), True
 
     @staticmethod
     def new_thing(name, description, loc_id):
@@ -203,7 +214,7 @@ class Post(object):
             ]
         }
         path = Query(Entity.Things.value).get_query()
-        return Post.send_request(path, payload)
+        return Post.send_request(path, payload), True
 
     @staticmethod
     def append_props(payload, name, key=None, value=None):
