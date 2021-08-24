@@ -55,6 +55,6 @@ class Entity(Enum):
         }
         ent = entity.lower()
         for key, value in switch.items():
-            if key == ent:
+            if key in ent or ent in key:
                 return Entity(value)
         return None

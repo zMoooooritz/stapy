@@ -16,11 +16,14 @@ class Post(object):
     """
 
     @staticmethod
-    def new_datastream(desc, name, obv_type, unit, op_id, s_id, t_id, key=None, value=None):
+    def new_datastream(name, desc, observation_type, unit, op_id, s_id, t_id, key=None, value=None):
         """
         Create a new Datastream with the given data filled in
         key and value have to be of the same length and will be handled as map afterwards
-        :param desc: the description for the Datastream
+        :param name: the name for the Datastream
+        :param description: the description for the Datastream
+        :param observation_type: the type of observations for the Datastream
+        :param unit: the unit in which the entries of the Datastream are taken
         :param op_id: the ID of the associated ObservedProperty
         :param s_id: the ID of the associated Sensor
         :param t_id: the ID of the associated Thing
@@ -29,9 +32,9 @@ class Post(object):
         :return: the ID of the newly created Datastream
         """
         payload = {
-            "description": desc,
             "name": name,
-            "observationType": obv_type,
+            "description": description,
+            "observationType": observation_type,
             "unitOfMeasurement": unit,
             "ObservedProperty": {
                 "@iot.id": op_id
@@ -48,7 +51,7 @@ class Post(object):
         return Post.send_request(path, payload), True
 
     @staticmethod
-    def new_full_datastream(desc, name, long_name, obv_type, unit, ob_prop, loc_type, loc_coords, key=None, value=None):
+    def new_full_datastream(name, desc, long_name, obv_type, unit, ob_prop, loc_type, loc_coords, key=None, value=None):
         """
         Create a new Datastream with all required and associated entities that contain the given data
         key and value have to be of the same length and will be handled as map afterwards
@@ -75,7 +78,7 @@ class Post(object):
         if err != True:
             return -1, False
 
-        return Post.new_datastream(desc, name, obv_type, unit, o_id, s_id, t_id, key, value), True
+        return Post.new_datastream(name, desc, obv_type, unit, o_id, s_id, t_id, key, value), True
 
     @staticmethod
     def new_observation(result, time, d_id, key=None, value=None):
@@ -141,16 +144,18 @@ class Post(object):
         requests.post(path, json=[payload])
 
     @staticmethod
-    def new_sensor(name, desc="", encodingType="", metadata=""):
+    def new_sensor(name, description="", encodingType="", metadata=""):
         """
         Create a new Sensor with the given data filled in
         :param name: the name for the Sensor
-        :param desc: the description for the Sensor
+        :param description: the description for the Sensor
+        :param encodingType: the encodingType of the Sensor
+        :param metadata: the metadata of the Sensor
         :return: the ID of the newly created Sensor
         """
         payload = {
             "name": name,
-            "description": desc,
+            "description": description,
             "encodingType": encodingType,
             "metadata": metadata
         }
@@ -219,9 +224,8 @@ class Post(object):
         path = Query(Entity.Things.value).get_query()
         return Post.send_request(path, payload), True
 
-
     @staticmethod
-    def new_entity(entity, *args):
+    def get_entity_method(entity):
         switch = {
             Entity.Datastreams: Post.new_datastream,
             Entity.Locations: Post.new_location,
@@ -230,10 +234,19 @@ class Post(object):
             Entity.Sensors: Post.new_sensor,
             Entity.Things: Post.new_thing
         }
-        ent = Entity.get(entity)
-        if ent == None:
-            logger.error("Invalid entity provided: " + entity)
-        return switch.get(ent)(*args)
+        return switch.get(Entity.get(entity))
+
+    @staticmethod
+    def new_entity(entity, *args):
+        return Post.get_entity_method(entity)(*args)
+
+    @staticmethod
+    def delete_entity(entity, ids):
+        if not isinstance(ids, list):
+            ids = [ids]
+        for e_id in ids:
+            if e_id.isdigit():
+                requests.delete(Query(entity).entity_id(int(e_id)).get_query())
 
     @staticmethod
     def append_props(payload, name, key=None, value=None):
