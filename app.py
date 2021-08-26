@@ -6,7 +6,6 @@ from cli.parser import Parser
 
 logger = None
 
-# TODO packages und anordnung fixen, damit alles von allem gefunden wird und die tests klappen
 # TODO add documentation (and readme)
 # TODO add more tests and make them run properly
 # TODO improve CLI Dialogs

@@ -11,9 +11,18 @@ import logging
 logger = logging.getLogger('root')
 
 def request():
+    while(True):
+        select_request()
+
+        question = construct_input_question("confirm", message="Do you want to continue?")
+        cont = prompt(question)
+        if not cont["value"]:
+            break
+
+def select_request():
     question = construct_choice_question(message="What do you want to do?", choices=["GET", "ADD", "DELETE", "UPDATE"])
     operation = prompt(question)
-    
+
     if operation["value"] in ["ADD", "DELETE", "UPDATE"]:
         question = construct_choice_question(message="Which entity to operate on?",
             choices=list(map(Entity.remap, Entity)))
@@ -26,8 +35,7 @@ def request():
         elif operation["value"] == "UPDATE":
             update_request(entity)
     else:
-        get_request(entity)
-
+        get_request()
 
 def delete_request(entity):
     question = construct_input_question(message="List of IDs to delete:")
@@ -52,7 +60,7 @@ def add_request(entity):
 def update_request(entity):
     raise NotImplementedError
 
-def get_request(entity):
+def get_request():
     raise NotImplementedError
 
 def construct_choice_question(type="rawlist", name="value", message="", choices=[]):
