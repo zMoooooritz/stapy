@@ -18,9 +18,9 @@ class Query(object):
         Construct the base query with the relevant entity
         :param entity: entity that contains the relevant information
         """
-        if entity not in Entity.list():
-            raise Exception("Invalid entity: " + entity)
-        self._sel_entity = entity
+        if entity not in Entity:
+            raise Exception("Invalid entity: " + entity.value)
+        self._sel_entity = entity.value
         self._selectors = []
         self._expands = []
 
@@ -118,9 +118,9 @@ class Query(object):
         :param entity: the sub-entity to select
         :return: self to allow command-chaining
         """
-        if entity not in Entity.list():
-            raise Exception("Invalid entity: " + entity)
-        self._sub_entity = entity
+        if entity not in Entity:
+            raise Exception("Invalid entity: " + entity.value)
+        self._sub_entity = entity.value
         return self
 
     def get_query(self):
@@ -174,8 +174,8 @@ class Expand(object):
         Construct the base expand with the relevant entity
         :param entity: entity that contains the relevant information
         """
-        if entity not in Entity.list():
-            raise Exception("Invalid entity: " + entity)
+        if entity not in Entity:
+            raise Exception("Invalid entity: " + entity.value)
         self._entity = Entity.remap(entity)
         self._options = []
 

@@ -137,8 +137,8 @@ class JSONSelect(object):
         :param entity:
         :return: self to allow command-chaining
         """
-        if entity not in Entity.list():
-            raise Exception("Invalid entity: " + entity)
+        if entity not in Entity:
+            raise Exception("Invalid entity: " + entity.value)
         self._selectors.append(Entity.remap(entity))
         return self
 

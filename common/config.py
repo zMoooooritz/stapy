@@ -43,4 +43,14 @@ class Config:
         for k,v in kwargs.items():
             self.config["DEFAULT"][k] = str(v)
 
+
 config = Config()
+
+def set_api_url(api_url):
+    if isinstance(api_url, list):
+        url = api_url[0]
+    url = str(url)
+    if not url.endswith("/"):
+        url = url + "/"
+    config.set(API_URL = url)
+    config.save()

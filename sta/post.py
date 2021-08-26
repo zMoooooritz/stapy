@@ -16,7 +16,7 @@ class Post(object):
     """
 
     @staticmethod
-    def new_datastream(name, desc, observation_type, unit, op_id, s_id, t_id, key=None, value=None):
+    def new_datastream(name, description, observation_type, unit, op_id, s_id, t_id, key=None, value=None):
         """
         Create a new Datastream with the given data filled in
         key and value have to be of the same length and will be handled as map afterwards
@@ -47,15 +47,15 @@ class Post(object):
             }
         }
         payload = Post.append_props(payload, "properties", key, value)
-        path = Query(Entity.Datastreams.value).get_query()
+        path = Query(Entity.Datastreams).get_query()
         return Post.send_request(path, payload), True
 
     @staticmethod
-    def new_full_datastream(name, desc, long_name, obv_type, unit, ob_prop, loc_type, loc_coords, key=None, value=None):
+    def new_full_datastream(name, description, long_name, obv_type, unit, ob_prop, loc_type, loc_coords, key=None, value=None):
         """
         Create a new Datastream with all required and associated entities that contain the given data
         key and value have to be of the same length and will be handled as map afterwards
-        :param desc: the description for the Datastream
+        :param description: the description for the Datastream
         :param name: the name for the associated entities
         :param long_name: the description for the associated entities
         :param ob_prop: the name and definition of the ObservedProperty
@@ -78,7 +78,7 @@ class Post(object):
         if err != True:
             return -1, False
 
-        return Post.new_datastream(name, desc, obv_type, unit, o_id, s_id, t_id, key, value), True
+        return Post.new_datastream(name, description, obv_type, unit, o_id, s_id, t_id, key, value), True
 
     @staticmethod
     def new_observation(result, time, d_id, key=None, value=None):
@@ -101,7 +101,7 @@ class Post(object):
             }
         }
         payload = Post.append_props(payload, "parameters", key, value)
-        path = Query(Entity.Observations.value).get_query()
+        path = Query(Entity.Observations).get_query()
         return Post.send_request(path, payload), True
 
     @staticmethod
@@ -159,11 +159,11 @@ class Post(object):
             "encodingType": encodingType,
             "metadata": metadata
         }
-        path = Query(Entity.Sensors.value).get_query()
+        path = Query(Entity.Sensors).get_query()
         return Post.send_request(path, payload), True
 
     @staticmethod
-    def new_observed_property(name, definition, description=""):
+    def new_observed_property(name, description, definition):
         """
         Create a new ObservedProperty with the given data filled in
         :param name: the name for the ObservedProperty
@@ -172,10 +172,10 @@ class Post(object):
         """
         payload = {
             "name": name,
-            "definition": definition,
             "description": description,
+            "definition": definition,
         }
-        path = Query(Entity.ObservedProperties.value).get_query()
+        path = Query(Entity.ObservedProperties).get_query()
         return Post.send_request(path, payload), True
 
     @staticmethod
@@ -200,7 +200,7 @@ class Post(object):
                 "coordinates": loc_coords
             }
         }
-        path = Query(Entity.Locations.value).get_query()
+        path = Query(Entity.Locations).get_query()
         return Post.send_request(path, payload), True
 
     @staticmethod
@@ -221,7 +221,7 @@ class Post(object):
                 }
             ]
         }
-        path = Query(Entity.Things.value).get_query()
+        path = Query(Entity.Things).get_query()
         return Post.send_request(path, payload), True
 
     @staticmethod
@@ -234,7 +234,7 @@ class Post(object):
             Entity.Sensors: Post.new_sensor,
             Entity.Things: Post.new_thing
         }
-        return switch.get(Entity.get(entity))
+        return switch.get(entity)
 
     @staticmethod
     def new_entity(entity, *args):
