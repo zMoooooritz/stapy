@@ -17,7 +17,7 @@ class Config:
     def read(self):
         try:
             self.config.read(self.FILENAME)
-        except:
+        except configparser.Error:
             logger.critical("Config file does not exist")
             logger.info("ending application")
             sys.exit()
@@ -26,7 +26,7 @@ class Config:
         try:
             with open(self.FILENAME, 'w') as configfile:
                 self.config.write(configfile)
-        except:
+        except configparser.Error:
             logger.critical("Writing the config file did fail")
             logger.info("ending application")
             sys.exit()
@@ -34,7 +34,7 @@ class Config:
     def get(self, arg):
         try:
             return self.config["DEFAULT"][arg]
-        except:
+        except configparser.Error:
             logger.critical("The provided key (" + str(arg) + ") does not exist in the config file")
             logger.info("ending application")
             sys.exit()

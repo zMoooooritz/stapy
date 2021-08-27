@@ -53,7 +53,6 @@ class Entity(Enum):
             ent_is = entity.value.lower()
             if ent_is in ent_search or ent_search in ent_is:
                 return entity
-        entity = None
         for entity, ent_val in cls.__singular_map().items():
             ent_is = ent_val.lower()
             if ent_is in ent_search or ent_search in ent_is:

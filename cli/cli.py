@@ -5,7 +5,6 @@ from sta.post import Post
 
 from PyInquirer import prompt
 from inspect import signature
-import requests
 import logging
 
 logger = logging.getLogger('root')

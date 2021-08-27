@@ -71,7 +71,7 @@ class Post(object):
         t_id, err = Post.new_thing(name, long_name, l_id)
         if err != True:
             return -1, False
-        o_id, err = Post.new_observed_property(ob_prop, ob_prop)
+        o_id, err = Post.new_observed_property(ob_prop, ob_prop, ob_prop)
         if err != True:
             return -1, False
         s_id, err = Post.new_sensor(name, long_name)

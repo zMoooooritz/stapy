@@ -50,7 +50,7 @@ class Parser(object):
 
         if self.args.add:
             func = Post.get_entity_method(Entity.match(self.args.add[0]))
-            if func == None:
+            if func is None:
                 logger.error("The supplied entity (" + self.args.add[0] + ") is not valid")
                 logger.error("The valid entities are: " + ", ".join(Entity.list()))
             else:
@@ -67,7 +67,7 @@ class Parser(object):
 
         if self.args.delete:
             entity = Entity.get(self.args.delete[0])
-            if entity == None:
+            if entity is None:
                 logger.error("The supplied entity (" + self.args.delete[0] + ") is not valid")
                 logger.error("The valid entities are: " + ", ".join(Entity.list()))
             else:
