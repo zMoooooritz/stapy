@@ -19,20 +19,20 @@ def request():
             break
 
 def select_request():
-    question = construct_choice_question(message="What do you want to do?", choices=["GET", "ADD", "DELETE", "UPDATE"])
+    question = construct_choice_question(message="What do you want to do?", choices=["GET", "POST", "DELETE", "PATCH"])
     operation = prompt(question)
 
-    if operation["value"] in ["ADD", "DELETE", "UPDATE"]:
+    if operation["value"] in ["POST", "DELETE", "PATCH"]:
         question = construct_choice_question(message="Which entity to operate on?",
             choices=list(map(Entity.remap, Entity)))
         entity = prompt(question)
 
         if operation["value"] == "DELETE":
             delete_request(entity)
-        elif operation["value"] == "ADD":
-            add_request(entity)
-        elif operation["value"] == "UPDATE":
-            update_request(entity)
+        elif operation["value"] == "POST":
+            post_request(entity)
+        elif operation["value"] == "PATCH":
+            patch_request(entity)
     else:
         get_request()
 
@@ -42,7 +42,7 @@ def delete_request(entity):
     ids = list(filter(lambda x: x.isdigit(), result["value"].split()))
     Post.delete_entity(Entity.match(entity["value"]), ids)
 
-def add_request(entity):
+def post_request(entity):
     func = Post.get_entity_method(Entity.match(entity["value"]))
     parameters = list(map(lambda param: param.name, signature(func).parameters.values()))
     questions = []
@@ -56,7 +56,7 @@ def add_request(entity):
 
     Post.new_entity(Entity.match(entity["value"]), *args)
 
-def update_request(entity):
+def patch_request(entity):
     raise NotImplementedError
 
 def get_request():
