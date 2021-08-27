@@ -1,4 +1,5 @@
 # STApy
+[![Latest Release](https://img.shields.io/github/release/zMoooooritz/STAPy.svg)](https://github.com/zMoooooritz/STAPy/releases)
 [![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/zMoooooritz/STApy.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/zMoooooritz/STApy/context:python)
 
 This is an easy to use SensorThings API Client written in python
