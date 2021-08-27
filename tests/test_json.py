@@ -1,7 +1,5 @@
-#!/usr/bin/env python
-
-from sta.entity import Entity
-from sta.json import JSONExtract, JSONSelect
+from STAPy.sta.entity import Entity
+from STAPy.sta.json import JSONExtract, JSONSelect
 
 import unittest
 
@@ -19,9 +17,9 @@ class TestJSONMethods(unittest.TestCase):
                             JSONSelect().attribute("Y").attribute("X").get_selector())
 
     def test_select_entity(self):
-        self.assertEqual([Entity.Datastreams.value], JSONSelect().entity(Entity.Datastreams.value).get_selector())
-        self.assertEqual([Entity.Datastreams.value, "FooBar"],
-                         JSONSelect().entity(Entity.Datastreams.value).attribute("FooBar").get_selector())
+        self.assertEqual([Entity.Datastream.value], JSONSelect().entity(Entity.Datastream).get_selector())
+        self.assertEqual([Entity.Datastream.value, "FooBar"],
+                         JSONSelect().entity(Entity.Datastream).attribute("FooBar").get_selector())
         with self.assertRaises(Exception):
             JSONSelect().entity("FooBar")
 
