@@ -1,5 +1,3 @@
-#!/usr/env/bin python
-
 from enum import Enum
 
 import geojson

@@ -1,10 +1,11 @@
-#!/usr/bin/env python
+from STAPy.common.log import Log
+from STAPy.common.config import config, set_api_url
+from STAPy.cli.cli import request
 
 import argparse
+import logging
 
-from common.log import Log
-from common.config import config, set_api_url
-from cli.cli import request
+logger = logging.getLogger('root')
 
 class Parser(object):
 

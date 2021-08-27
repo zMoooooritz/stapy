@@ -1,28 +1,26 @@
-#!/usr/bin/env python
-
 from enum import Enum
 
 class Entity(Enum):
     """
     This class represents all available entities in the SensorThingsAPI (v1.1)
     """
-    Datastreams = "Datastreams"
-    MultiDatastreams = "MultiDatastreams"
-    FeaturesOfInterest = "FeaturesOfInterest"
-    HistoricalLocations = "HistoricalLocations"
-    Locations = "Locations"
-    Observations = "Observations"
-    ObservedProperties = "ObservedProperties"
-    Sensors = "Sensors"
-    Things = "Things"
+    Datastream = "Datastreams"
+    MultiDatastream = "MultiDatastreams"
+    FeatureOfInterest = "FeaturesOfInterest"
+    HistoricalLocation = "HistoricalLocations"
+    Location = "Locations"
+    Observation = "Observations"
+    ObservedProperty = "ObservedProperties"
+    Sensor = "Sensors"
+    Thing = "Things"
 
     @staticmethod
     def __singular_map():
         return {
-            Entity.FeaturesOfInterest: "FeatureOfInterest",
-            Entity.ObservedProperties: "ObservedProperty",
-            Entity.Sensors: "Sensor",
-            Entity.Things: "Thing"
+            Entity.FeatureOfInterest: "FeatureOfInterest",
+            Entity.ObservedProperty: "ObservedProperty",
+            Entity.Sensor: "Sensor",
+            Entity.Thing: "Thing"
         }
 
     @staticmethod

@@ -1,7 +1,5 @@
-#!/usr/bin/env python
-
-from sta.entity import Entity
-from sta.post import Post
+from STAPy.sta.entity import Entity
+from STAPy.sta.post import Post
 
 from PyInquirer import prompt
 from inspect import signature

@@ -1,9 +1,7 @@
-#!/usr/bin/env python
-
-from sta.query import Query
-from sta.entity import Entity
-from sta.geo import GeoJSON
-from common.config import config
+from STAPy.sta.query import Query
+from STAPy.sta.entity import Entity
+from STAPy.sta.geo import GeoJSON
+from STAPy.common.config import config
 
 import requests
 import logging
@@ -47,7 +45,7 @@ class Post(object):
             }
         }
         payload = Post.append_props(payload, "properties", key, value)
-        path = Query(Entity.Datastreams).get_query()
+        path = Query(Entity.Datastream).get_query()
         return Post.send_request(path, payload), True
 
     @staticmethod
@@ -101,7 +99,7 @@ class Post(object):
             }
         }
         payload = Post.append_props(payload, "parameters", key, value)
-        path = Query(Entity.Observations).get_query()
+        path = Query(Entity.Observation).get_query()
         return Post.send_request(path, payload), True
 
     @staticmethod
@@ -159,7 +157,7 @@ class Post(object):
             "encodingType": encodingType,
             "metadata": metadata
         }
-        path = Query(Entity.Sensors).get_query()
+        path = Query(Entity.Sensor).get_query()
         return Post.send_request(path, payload), True
 
     @staticmethod
@@ -175,7 +173,7 @@ class Post(object):
             "description": description,
             "definition": definition,
         }
-        path = Query(Entity.ObservedProperties).get_query()
+        path = Query(Entity.ObservedProperty).get_query()
         return Post.send_request(path, payload), True
 
     @staticmethod
@@ -200,7 +198,7 @@ class Post(object):
                 "coordinates": loc_coords
             }
         }
-        path = Query(Entity.Locations).get_query()
+        path = Query(Entity.Location).get_query()
         return Post.send_request(path, payload), True
 
     @staticmethod
@@ -221,18 +219,18 @@ class Post(object):
                 }
             ]
         }
-        path = Query(Entity.Things).get_query()
+        path = Query(Entity.Thing).get_query()
         return Post.send_request(path, payload), True
 
     @staticmethod
     def get_entity_method(entity):
         switch = {
-            Entity.Datastreams: Post.new_datastream,
-            Entity.Locations: Post.new_location,
-            Entity.Observations: Post.new_observation,
-            Entity.ObservedProperties: Post.new_observed_property,
-            Entity.Sensors: Post.new_sensor,
-            Entity.Things: Post.new_thing
+            Entity.Datastream: Post.new_datastream,
+            Entity.Location: Post.new_location,
+            Entity.Observation: Post.new_observation,
+            Entity.ObservedProperty: Post.new_observed_property,
+            Entity.Sensor: Post.new_sensor,
+            Entity.Thing: Post.new_thing
         }
         return switch.get(entity)
 

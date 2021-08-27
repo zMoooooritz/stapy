@@ -1,13 +1,12 @@
-#!/usr/bin/env python
-
-from common.log import custom_logger
-from common.config import config
-from cli.parser import Parser
+from STAPy.common.log import custom_logger
+from STAPy.common.config import config
+from STAPy.cli.parser import Parser
 
 logger = None
 
+# TODO make the correct logger run in non app.py mode as well -> loglevel in config file
 # TODO add documentation (and readme)
-# TODO add more tests and make them run properly
+# TODO add more tests
 # TODO improve CLI Dialogs
 # TODO allow for patch / update
 
@@ -23,6 +22,3 @@ def run():
     config.save()
 
     logger.info("ending application")
-    return True
-
-run()
