@@ -1,5 +1,3 @@
-#!/usr/env/bin python
-
 from functools import wraps
 
 import time

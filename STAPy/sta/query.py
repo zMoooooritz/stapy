@@ -1,7 +1,5 @@
-#!/usr/bin/env python
-
-from sta.entity import Entity
-from common.config import config
+from STAPy.sta.entity import Entity
+from STAPy.common.config import config
 
 class Query(object):
     """

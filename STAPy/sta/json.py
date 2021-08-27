@@ -1,7 +1,5 @@
-#!/usr/env/bin python
-
-from sta.entity import Entity
-from common.retry import retry
+from STAPy.sta.entity import Entity
+from STAPy.common.retry import retry
 
 import json
 import urllib.request
