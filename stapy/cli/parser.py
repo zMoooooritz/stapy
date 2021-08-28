@@ -1,6 +1,6 @@
-from STAPy.common.log import Log
-from STAPy.common.config import config, set_api_url
-from STAPy.cli.cli import request
+from stapy.common.log import Log
+from stapy.common.config import config, set_api_url
+from stapy.cli.cli import request
 
 import argparse
 import logging

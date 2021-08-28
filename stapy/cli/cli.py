@@ -1,5 +1,5 @@
-from STAPy.sta.entity import Entity
-from STAPy.sta.post import Post
+from stapy.sta.entity import Entity
+from stapy.sta.post import Post
 
 from PyInquirer import prompt
 from inspect import signature

@@ -1,9 +1,8 @@
 from setuptools import setup, find_packages
 from os import path
-import sys
 import re
 
-VERSIONFILE = "STAPy/_version.py"
+VERSIONFILE = "stapy/_version.py"
 verstrline = open(VERSIONFILE).read()
 VSRE = r"^__version__ = ['\"]([^'\"]*)['\"]"
 mo = re.search(VSRE, verstrline, re.M)
@@ -27,18 +26,17 @@ def test_suite():
     suite = unittest.TestLoader().discover("tests")
     return suite
 
-
 setup(
-    name="STAPy",
+    name="stapy",
     version=verstr,
     description="A Python module to interact with the SensorThings API",
     license="MIT",
     keywords="gis geography ogc data sensor",
     author="Moritz Biering",
     author_email="moritzbiering.mb@gmail.com",
-    url="https://github.com/zMoooooritz/STAPy/",
+    url="https://github.com/zMoooooritz/stapy/",
     packages=find_packages(exclude=['docs', 'tests*']),
-    # package_dir={"STAPy": "STAPy"},
+    # package_dir={"stapy": "stapy"},
     install_requires=install_requires,
     test_suite="setup.test_suite",
     python_requires=">=3.6",

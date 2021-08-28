@@ -1,4 +1,4 @@
-from STAPy.sta.entity import Entity
+from stapy.sta.entity import Entity
 
 import unittest
 

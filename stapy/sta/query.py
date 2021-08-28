@@ -1,5 +1,5 @@
-from STAPy.sta.entity import Entity
-from STAPy.common.config import config
+from stapy.sta.entity import Entity
+from stapy.common.config import config
 
 class Query(object):
     """

@@ -1,5 +1,5 @@
-from STAPy.sta.entity import Entity
-from STAPy.sta.json import JSONExtract, JSONSelect
+from stapy.sta.entity import Entity
+from stapy.sta.json import JSONExtract, JSONSelect
 
 import unittest
 

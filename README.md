@@ -1,6 +1,6 @@
 # stapy
-[![Latest Release](https://img.shields.io/github/release/zMoooooritz/STAPy.svg)](https://github.com/zMoooooritz/STAPy/releases)
-[![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/zMoooooritz/STApy.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/zMoooooritz/STApy/context:python)
+[![Latest Release](https://img.shields.io/github/release/zMoooooritz/stapy.svg)](https://github.com/zMoooooritz/stapy/releases)
+[![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/zMoooooritz/stapy.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/zMoooooritz/stapy/context:python)
 
 This is an easy to use SensorThings API Client written in python
 
@@ -12,7 +12,7 @@ TODO
 
 ## Usage
 
-STAPy does currently support 3 different ways of interaction.
+stapy does currently support 3 different ways of interaction.
 
 ### Interactive
 

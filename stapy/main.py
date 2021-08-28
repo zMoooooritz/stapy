@@ -1,6 +1,6 @@
-from STAPy.common.log import custom_logger
-from STAPy.common.config import config
-from STAPy.cli.parser import Parser
+from stapy.common.log import custom_logger
+from stapy.common.config import config
+from stapy.cli.parser import Parser
 
 logger = None
 

@@ -1,6 +1,6 @@
-from STAPy.sta.query import Query, Expand
-from STAPy.sta.entity import Entity
-from STAPy.common.config import config
+from stapy.sta.query import Query, Expand
+from stapy.sta.entity import Entity
+from stapy.common.config import config
 
 import unittest
 

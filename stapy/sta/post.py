@@ -1,7 +1,7 @@
-from STAPy.sta.query import Query
-from STAPy.sta.entity import Entity
-from STAPy.sta.geo import GeoJSON
-from STAPy.common.config import config
+from stapy.sta.query import Query
+from stapy.sta.entity import Entity
+from stapy.sta.geo import GeoJSON
+from stapy.common.config import config
 
 import requests
 import logging

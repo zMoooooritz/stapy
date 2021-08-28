@@ -1,5 +1,5 @@
-from STAPy.sta.entity import Entity
-from STAPy.common.retry import retry
+from stapy.sta.entity import Entity
+from stapy.common.retry import retry
 
 import json
 import urllib.request
