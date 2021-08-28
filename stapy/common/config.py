@@ -52,3 +52,7 @@ def set_api_url(api_url):
         url = url + "/"
     config.set(API_URL = url)
     config.save()
+
+def set_log_level(log_level):
+    config.set(LOG_LEVEL = log_level)
+    config.save()
