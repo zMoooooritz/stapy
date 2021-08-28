@@ -1,11 +1,19 @@
 from stapy.sta.entity import Entity
 from stapy.common.config import config
+from stapy.common.retry import retry
+
+import json
+import urllib.request
+import logging
+
+logger = logging.getLogger('root')
 
 class Query(object):
     """
     This class allows to create queries for the SensorThings API
     """
     _selectors = None
+    _params = None
     _sel_entity = None
     _entity_id = None
     _sub_entity = None
@@ -20,32 +28,30 @@ class Query(object):
             raise Exception("Invalid entity: " + entity.value)
         self._sel_entity = entity.value
         self._selectors = []
+        self._params = []
         self._expands = []
 
-    def select(self, attributes):
+    def select(self, *selectors):
         """
         Select a list of attributes that contain the relevant data
-        :param attributes: a list of strings each select a top-level attribute in the entity
+        :param selectors: a tuple strings that can contain "." where the first part of each string is the top-level attribute
         :return: self to allow command-chaining
         """
-        self._selectors.append(_build_selpand("select", attributes))
-        return self
 
-    def multi_select(self, *selectors):
-        """
-        Select a list of attributes that contain the relevant data
-        :param selectors: a tuple of lists of strings where the first string of each list is the top-level attribute
-        :return: self to allow command-chaining
-        """
-        sels = set()
+        if len(selectors) == 0:
+            raise Exception("no selectors provided")
+
+        sels = []
         for selector in selectors:
-            if not isinstance(selector, list):
-                raise Exception("invalid selector format")
-            sel = selector[0]
-            if not isinstance(sel, str):
+            if not isinstance(selector, str):
                 raise Exception("invalid selector")
-            sels.add(sel)
-        return self.select(list(sels))
+            sel_split = selector.split(".")
+            sel = sel_split[0]
+            if not sel in sels:
+                sels.append(sel)
+            self._selectors.append(sel_split)
+        self._params.append(_build_selpand("select", list(sels)))
+        return self
 
     def filter(self, statement):
         """
@@ -53,7 +59,7 @@ class Query(object):
         :param statement: the filter statement
         :return: self to allow command-chaining
         """
-        self._selectors.append("filter=" + statement)
+        self._params.append("filter=" + statement)
         return self
 
     def expand(self, expand):
@@ -72,7 +78,7 @@ class Query(object):
         :param asc: whether or not to sort ascending
         :return: self to allow command-chaining
         """
-        self._selectors.append("orderby=" + str(attribute) + " " + ("asc" if asc else "desc"))
+        self._params.append("orderby=" + str(attribute) + " " + ("asc" if asc else "desc"))
         return self
 
     def limit(self, count=10):
@@ -81,12 +87,12 @@ class Query(object):
         :param count: the number of required entities
         :return: self to allow command-chaining
         """
-        self._selectors.append("top=" + str(count))
+        self._params.append("top=" + str(count))
         return self
 
     def max(self):
         """
-        Unlimit the response to get all available entities
+        Get all available entities
         :return: self to allow command-chaining
         """
         return self.limit(1000)
@@ -97,7 +103,7 @@ class Query(object):
         :param count: the number of entities to skip over
         :return: self to allow command-chaining
         """
-        self._selectors.append("skip=" + str(count))
+        self._params.append("skip=" + str(count))
         return self
 
     def entity_id(self, entity_id):
@@ -128,15 +134,83 @@ class Query(object):
         """
         entity = self._build_entity()
         expand = "$" + self._build_expands()
-        selector = _build_selector(self._selectors, "&")
+        selector = _build_selector(self._params, "&")
         query = config.get("API_URL") + entity
-        if len(self._expands) > 0 and len(self._selectors) > 0:
+        if len(self._expands) > 0 and len(self._params) > 0:
             query += "?" + expand + "&" + selector
         elif len(self._expands) > 0:
             query += "?" + expand
-        elif len(self._selectors) > 0:
+        elif len(self._params) > 0:
             query += "?" + selector
         return query
+
+    @retry(urllib.error.HTTPError, tries=5, delay=1, backoff=2, logger=logger)
+    def urlopen_with_retry(self, path):
+        """
+        This method retries to fetch data from the specified path according to the retry parameters
+        """
+        return urllib.request.urlopen(path)
+
+    def get_data_sets(self):
+        """
+        This method extracts all data defined by the different given selectors from the data specified by the path
+        Each defined selector results in one list in the tuple of lists
+        :return: tuple of lists of required data
+        """
+        if len(self._selectors) == 0:
+            return []
+        data_sets = [[] for _ in range(len(self._selectors))]
+        count = 0
+        finished = False
+        is_list = True
+        while True:
+            url = self.urlopen_with_retry(self.get_query())
+            data = json.loads(url.read().decode())
+            try:
+                payload = data["value"]
+            except KeyError:
+                payload = data
+                is_list = False
+
+            print(payload)
+            print(self._selectors)
+            if is_list:
+                for value in payload:
+                    for idx, selector in enumerate(self._selectors):
+                        val = value
+                        for sel in selector:
+                            print(val, sel)
+                            try:
+                                val = val[sel]
+                            except KeyError:
+                                val = ""
+                                break
+                        data_sets[idx].append(val)
+                    count += 1
+                    # if count == self._count:
+                    #     finished = True
+                    #     break
+
+                if finished or "@iot.nextLink" not in data:
+                    break
+                else:
+                    self._path = data["@iot.nextLink"]
+            else:
+                for idx, selector in enumerate(self._selectors):
+                    val = payload
+                    for sel in selector:
+                        try:
+                            val = val[sel]
+                        except KeyError:
+                            val = ""
+                            break
+                    data_sets[idx].append(val)
+                break
+
+        if len(self._selectors) == 1:
+            return data_sets[0]
+        else:
+            return tuple(data_sets)
 
     def _build_entity(self):
         """
@@ -242,13 +316,12 @@ def _build_selpand(item, attributes):
     :return: the resulting select or expand-term
     """
     selector = item + "="
-    if isinstance(attributes, list):
-        for i, attribute in enumerate(attributes):
-            if i != 0:
-                selector += ","
-            selector += str(attribute)
-    else:
-        selector += str(attributes)
+    if not isinstance(attributes, list):
+        attributes = [attributes]
+    for i, attribute in enumerate(attributes):
+        if i != 0:
+            selector += ","
+        selector += str(attribute)
     return selector
 
 def _build_selector(selectors, separator):

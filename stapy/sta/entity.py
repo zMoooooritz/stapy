@@ -33,9 +33,9 @@ class Entity(Enum):
     @classmethod
     def remap(cls, entity):
         """
-        This method remaps an entity to the singular version if needed,
+        This method remaps an Entity to the singular (string) version if needed,
         these are sometimes required in the STA (in case single elements are accesses)
-        :param entity: the entity to possible remap
+        :param entity: the entity to remap
         :return: the remapped entity
         """
         if entity not in Entity:
@@ -46,6 +46,12 @@ class Entity(Enum):
 
     @classmethod
     def match(cls, entity):
+        """
+        This method takes a string entity and tries to find the Entity,
+        whose value matches the provided string
+        :param entity: the string to find the entity for
+        :return: the entity or None
+        """
         ent_search = entity.lower()
         for entity in Entity:
             ent_is = entity.value.lower()

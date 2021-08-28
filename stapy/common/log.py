@@ -29,7 +29,7 @@ class Log(Enum):
         try:
             return Log[log]
         except KeyError:
-            raise Log.NOTSET
+            return Log.NOTSET.value
 
 
 def custom_logger(name, level):
