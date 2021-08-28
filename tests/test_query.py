@@ -18,16 +18,17 @@ class TestQueryMethods(unittest.TestCase):
         with self.assertRaises(Exception):
             Query("Foo").get_query()
 
-    def test_select(self):
+    def test_select1(self):
         self.assertEqual(self.query.select("id").get_query(), self.API_URL + "Datastreams?$select=id")
-
-    def test_multi_select(self):
-        self.assertEqual(self.query.select("id").get_query(),
-                         self.query_alt.multi_select(["id"]).get_query())
-        self.assertEqual(Query(self.da).select(["pi"]).get_query(),
-                         Query(self.da).multi_select(["pi", "e"]).get_query())
+        self.assertEqual(self.query_alt.select("id").get_query(), self.API_URL + "Datastreams?$select=id")
         with self.assertRaises(Exception):
-            Query(Entity.Datastream).multi_select("id").get_query()
+            Query(Entity.Datastream).select().get_query()
+
+    def test_select2(self):
+        self.assertEqual(self.query.select("id.pi").get_query(), self.API_URL + "Datastreams?$select=id")
+        self.assertEqual(self.query_alt.select("id", "pi").get_query(), self.API_URL + "Datastreams?$select=id,pi")
+        with self.assertRaises(Exception):
+            Query(Entity.Datastream).multi_select(1).get_query()
 
     def test_filter(self):
         self.assertEqual(self.query.filter("id eq 0").get_query(), self.API_URL + "Datastreams?$filter=id%20eq%200")
