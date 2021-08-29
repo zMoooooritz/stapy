@@ -17,7 +17,7 @@ class Parser(object):
     def construct_parser(self):
         parser = argparse.ArgumentParser(
             description="Access and modify data that is stored in a server that uses the SensorThings API (v1.1+)",
-            prog="STApy", epilog="")
+            prog="stapy", epilog="")
         parser.add_argument("-l", "--log", type=Log.from_string, choices=list(Log), default=Log.INFO,
                             help="define the log level", metavar="CRITICAL,ERROR,WARNING,INFO,DEBUG,NOTSET")
         parser.add_argument("-u", "--url-set", dest="urlset", nargs=1, metavar=("URL"),
@@ -42,7 +42,7 @@ class Parser(object):
         if self.args.urlset:
             set_api_url(self.args.urlset)
         if self.args.urlget:
-            print("The currently set API_URL is: " + str(config.get("API_URL")))
+            logger.info("The currently set API_URL is: " + str(config.get("API_URL")))
 
         if (self.args.add or self.args.delete or self.args.getr) and config.get("API_URL") == "":
             logger.critical("The url has to be set before using the application (see --help)")

@@ -45,14 +45,10 @@ class Config:
 config = Config()
 
 def set_api_url(api_url):
-    if isinstance(api_url, list):
-        url = api_url[0]
-    url = str(url)
-    if not url.endswith("/"):
-        url = url + "/"
-    config.set(API_URL = url)
-    config.save()
-
-def set_log_level(log_level):
-    config.set(LOG_LEVEL = log_level)
+    if not isinstance(api_url, str):
+        logger.critical("The provided url (" + str(api_url) + ") is not valid")
+        return
+    if not api_url.endswith("/"):
+        api_url = api_url + "/"
+    config.set(API_URL = api_url)
     config.save()

@@ -1,9 +1,6 @@
 from enum import Enum
 
 import geojson
-import logging
-
-logger = logging.getLogger('root')
 
 class GeoJSON(Enum):
     """
@@ -29,10 +26,10 @@ class GeoJSON(Enum):
         :return: if the given obj and params build up a valid geojson object
         """
         if not cls.__is_valid_obj(obj):
-            logger.error("The given object is not a valid GeoJSON object: " + str(obj))
+            print("The given object is not a valid GeoJSON object: " + str(obj))
             return False
         if not cls.__has_valid_params(obj, params):
-            logger.error("The given params \"" + str(params) + "\" are not valid for the GeoJSON object: " + str(obj))
+            print("The given params \"" + str(params) + "\" are not valid for the GeoJSON object: " + str(obj))
             return False
         return True
 

@@ -6,8 +6,6 @@ import json
 import urllib.request
 import logging
 
-logger = logging.getLogger('root')
-
 class Query(object):
     """
     This class allows to create queries for the SensorThings API
@@ -144,7 +142,7 @@ class Query(object):
             query += "?" + selector
         return query
 
-    @retry(urllib.error.HTTPError, tries=5, delay=1, backoff=2, logger=logger)
+    @retry(urllib.error.HTTPError, tries=5, delay=1, backoff=2)
     def urlopen_with_retry(self, path):
         """
         This method retries to fetch data from the specified path according to the retry parameters
@@ -172,14 +170,11 @@ class Query(object):
                 payload = data
                 is_list = False
 
-            print(payload)
-            print(self._selectors)
             if is_list:
                 for value in payload:
                     for idx, selector in enumerate(self._selectors):
                         val = value
                         for sel in selector:
-                            print(val, sel)
                             try:
                                 val = val[sel]
                             except KeyError:

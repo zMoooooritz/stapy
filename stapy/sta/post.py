@@ -4,9 +4,6 @@ from stapy.sta.geo import GeoJSON
 from stapy.common.config import config
 
 import requests
-import logging
-
-logger = logging.getLogger('root')
 
 class Post(object):
     """

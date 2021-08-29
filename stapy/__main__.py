@@ -1,12 +1,10 @@
-from stapy.common.log import custom_logger, Log
+from stapy.common.log import custom_logger
 from stapy.common.config import config
 from stapy.cli.parser import Parser
-import logging
 
 parser = Parser()
 
-logger = custom_logger('root', Log.from_string(config.get("LOG_LEVEL")))
-# logger = logging.getLogger('root')
+logger = custom_logger('root', parser.get_log_level())
 
 logger.info("starting application")
 
