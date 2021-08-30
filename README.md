@@ -9,22 +9,39 @@ A server implementation of the STA can be found here [FROST](https://github.com/
 
 ## Installation
 
-TODO
+stapy is compatible with Python 3.6+ and the recommended way to install is via [pip](https://pip.pypa.io/en/stable/)
+```bash
+pip install stapy
+```
 
 ## Usage
 
 stapy can be used both form the command line (in two different ways) and as a Python library.
 
+### API_URL
+
+At first it is necessary to set the URL of the STA.
+Within the CLI this can be achieved as follows:
+```bash
+python -m stapy -u {URL}
+```
+The URL can also be set from within a Python script:
+```python
+>>> import stapy
+
+>>> stapy.set_api_url({URL})
+```
+
 ### CLI - Interactive
 
 The interactive mode is the easiest one to use but can **not** be used programmatically.
-Therefore it is porbably good starting point to get familiar with the STA.
+Therefore it is probably a good starting point to get familiar with the STA.
 The interactive mode can be invoked in the following way.
 ```bash
 python -m stapy -i
 ```
 Currently it does only support `POST` and `DELETE` requests. (`PATCH` will be added)
-`GET` are not supported but can be used within a web-browser.
+`GET` is not supported but can be used within a web-browser.
 
 ### CLI - Normal
 

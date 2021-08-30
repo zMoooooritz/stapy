@@ -1,8 +1,9 @@
 from setuptools import setup, find_packages
+from io import open
 from os import path
 import re
 
-VERSIONFILE = "stapy/_version.py"
+VERSIONFILE = "stapy/version.py"
 verstrline = open(VERSIONFILE).read()
 VSRE = r"^__version__ = ['\"]([^'\"]*)['\"]"
 mo = re.search(VSRE, verstrline, re.M)
@@ -10,7 +11,6 @@ if mo:
     verstr = mo.group(1)
 else:
     raise RuntimeError(f"Unable to find version string in {VERSIONFILE}.")
-
 
 # get the dependencies
 here = path.abspath(path.dirname(__file__))
@@ -36,7 +36,6 @@ setup(
     author_email="moritzbiering.mb@gmail.com",
     url="https://github.com/zMoooooritz/stapy/",
     packages=find_packages(exclude=['docs', 'tests*']),
-    # package_dir={"stapy": "stapy"},
     install_requires=install_requires,
     test_suite="setup.test_suite",
     python_requires=">=3.6",

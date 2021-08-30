@@ -1,6 +1,7 @@
 from stapy.common.log import Log
 from stapy.common.config import config, set_api_url
 from stapy.cli.cli import request
+from stapy.version import __version__
 
 import argparse
 import logging
@@ -32,6 +33,8 @@ class Parser(object):
                             help="get the content of entities by id or path")
         parser.add_argument("-i", "--inter", action="store_true",
                             help="start the interactive CLI mode for requests")
+        parser.add_argument("-v", "--version", action="version",
+                            version="%(prog)s {version}".format(version=__version__))
 
         self.args = parser.parse_args()
 
@@ -40,7 +43,7 @@ class Parser(object):
 
     def parse_args(self):
         if self.args.urlset:
-            set_api_url(self.args.urlset)
+            set_api_url(self.args.urlset[0])
         if self.args.urlget:
             logger.info("The currently set API_URL is: " + str(config.get("API_URL")))
 

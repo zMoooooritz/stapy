@@ -4,7 +4,6 @@ from stapy.common.retry import retry
 
 import json
 import urllib.request
-import logging
 
 class Query(object):
     """
