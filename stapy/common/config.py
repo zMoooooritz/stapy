@@ -32,10 +32,9 @@ class Config:
     def get(self, arg):
         try:
             return self.config["DEFAULT"][arg]
-        except configparser.Error:
+        except KeyError:
             logger.critical("The provided key (" + str(arg) + ") does not exist in the config file")
-            logger.info("ending application")
-            sys.exit()
+            return ""
 
     def set(self, **kwargs):
         for k,v in kwargs.items():
