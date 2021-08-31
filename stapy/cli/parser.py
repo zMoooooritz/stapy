@@ -67,7 +67,7 @@ class Parser(object):
                     logger.error("Not enough arguments supplied for the entity " + Entity.get(self.args.add[0]).value)
                     logger.error("The following arguments are mandatory (in this order): " + ", ".join(req_args))
                 else:
-                    Post.new_entity(Entity.match(self.args.add[0]), *self.args.add[1:])
+                    Post.entity(Entity.match(self.args.add[0]), *self.args.add[1:])
 
         if self.args.delete:
             entity = Entity.get(self.args.delete[0])
@@ -82,9 +82,7 @@ class Parser(object):
                         logger.warning(str(e_id) + " is not a valid " + entity.value + "-ID")
 
         if self.args.getr:
-            # path = Query(Entity.Locations.value).get_query()
-            # print(JSONExtract(path).select("name").get_data_sets())
-            pass
+            raise NotImplementedError
 
         if self.args.inter:
             request()

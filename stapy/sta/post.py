@@ -11,7 +11,7 @@ class Post(object):
     """
 
     @staticmethod
-    def new_datastream(name, description, observation_type, unit, op_id, s_id, t_id, key=None, value=None):
+    def datastream(name, description, observation_type, unit, op_id, s_id, t_id, key=None, value=None):
         """
         Create a new Datastream with the given data filled in
         key and value have to be of the same length and will be handled as map afterwards
@@ -46,7 +46,7 @@ class Post(object):
         return Post.send_request(path, payload), True
 
     @staticmethod
-    def new_full_datastream(name, description, long_name, obv_type, unit, ob_prop, loc_type, loc_coords, key=None, value=None):
+    def full_datastream(name, description, long_name, obv_type, unit, ob_prop, loc_type, loc_coords, key=None, value=None):
         """
         Create a new Datastream with all required and associated entities that contain the given data
         key and value have to be of the same length and will be handled as map afterwards
@@ -60,23 +60,42 @@ class Post(object):
         :param value: a list of values that contain additional information of the Datastream
         :return: the ID of the newly created Datastream
         """
-        l_id, err = Post.new_location(name, long_name, loc_type, loc_coords)
+        l_id, err = Post.location(name, long_name, loc_type, loc_coords)
         if err != True:
             return -1, False
-        t_id, err = Post.new_thing(name, long_name, l_id)
+        t_id, err = Post.thing(name, long_name, l_id)
         if err != True:
             return -1, False
-        o_id, err = Post.new_observed_property(ob_prop, ob_prop, ob_prop)
+        o_id, err = Post.observed_property(ob_prop, ob_prop, ob_prop)
         if err != True:
             return -1, False
-        s_id, err = Post.new_sensor(name, long_name)
+        s_id, err = Post.sensor(name, long_name)
         if err != True:
             return -1, False
 
-        return Post.new_datastream(name, description, obv_type, unit, o_id, s_id, t_id, key, value), True
+        return Post.datastream(name, description, obv_type, unit, o_id, s_id, t_id, key, value), True
 
     @staticmethod
-    def new_observation(result, time, d_id, key=None, value=None):
+    def feature_of_interest(name, description="", encodingType="", feature=""):
+        """
+        Create a new FeatureOfInterest with the given data filled in
+        :param name: the name for the FeatureOfInterest
+        :param description: the description for the FeatureOfInterest
+        :param encodingType: the encodingType for the FeatureOfInterest
+        :param feature: the relevant feature for an observation
+        :return: the ID of the newly created FeatureOfInterest
+        """
+        payload = {
+            "name": name,
+            "description": description,
+            "encodingType": encodingType,
+            "feature": feature
+        }
+        path = Query(Entity.FeatureOfInterest).get_query()
+        return Post.send_request(path, payload), True
+
+    @staticmethod
+    def observation(result, time, d_id, key=None, value=None):
         """
         Create a new Observation with the given data filled in
         key and value have to be of the same length and will be handled as map afterwards
@@ -100,7 +119,7 @@ class Post(object):
         return Post.send_request(path, payload), True
 
     @staticmethod
-    def new_observations(results, times, d_id, keys=None, values=None):
+    def observations(results, times, d_id, keys=None, values=None):
         """
         Create new Observations with the given data filled in
         values has to contain a list of entries for each element in keys
@@ -139,7 +158,7 @@ class Post(object):
         requests.post(path, json=[payload])
 
     @staticmethod
-    def new_sensor(name, description="", encodingType="", metadata=""):
+    def sensor(name, description="", encodingType="", metadata=""):
         """
         Create a new Sensor with the given data filled in
         :param name: the name for the Sensor
@@ -158,7 +177,7 @@ class Post(object):
         return Post.send_request(path, payload), True
 
     @staticmethod
-    def new_observed_property(name, description, definition):
+    def observed_property(name, description, definition):
         """
         Create a new ObservedProperty with the given data filled in
         :param name: the name for the ObservedProperty
@@ -174,7 +193,7 @@ class Post(object):
         return Post.send_request(path, payload), True
 
     @staticmethod
-    def new_location(name, description, loc_type, loc_coords, encodingType=""):
+    def location(name, description, loc_type, loc_coords, encodingType=""):
         """
         Create a new Location with the given data filled in
         :param name: the name for the Location
@@ -199,7 +218,7 @@ class Post(object):
         return Post.send_request(path, payload), True
 
     @staticmethod
-    def new_thing(name, description, loc_id):
+    def thing(name, description, loc_id):
         """
         Create a new Thing with the given data filled in
         :param name: the name for the Thing
@@ -222,26 +241,19 @@ class Post(object):
     @staticmethod
     def get_entity_method(entity):
         switch = {
-            Entity.Datastream: Post.new_datastream,
-            Entity.Location: Post.new_location,
-            Entity.Observation: Post.new_observation,
-            Entity.ObservedProperty: Post.new_observed_property,
-            Entity.Sensor: Post.new_sensor,
-            Entity.Thing: Post.new_thing
+            Entity.Datastream: Post.datastream,
+            Entity.FeatureOfInterest: Post.feature_of_interest,
+            Entity.Location: Post.location,
+            Entity.Observation: Post.observation,
+            Entity.ObservedProperty: Post.observed_property,
+            Entity.Sensor: Post.sensor,
+            Entity.Thing: Post.thing
         }
         return switch.get(entity)
-
+   
     @staticmethod
-    def new_entity(entity, *args):
+    def entity(entity, *args):
         return Post.get_entity_method(entity)(*args)
-
-    @staticmethod
-    def delete_entity(entity, ids):
-        if not isinstance(ids, list):
-            ids = [ids]
-        for e_id in ids:
-            if e_id.isdigit():
-                requests.delete(Query(entity).entity_id(int(e_id)).get_query())
 
     @staticmethod
     def append_props(payload, name, key=None, value=None):

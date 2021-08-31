@@ -56,13 +56,13 @@ As the interactive mode it does currently only support `POST` and `DELETE` reque
 
 This is the Python interface to the SensorThings API (stapy is meant to be used as Python library).
 
-The relevant classes can be found within the files `entity.py`, `post.py` and `query.py` in the `sta` sub-module.
+The relevant classes can be found within the files `entity.py`, `delete.py`, `post.py` and `query.py` in the `sta` sub-module.
 
 The following syntax can be used to create new entities:
 ```python
 >>> from stapy import Post
 
->>> Post.new_observed_property("TestProp", "TestProp-Desc", "TestProp-Def")
+>>> Post.observed_property("TestProp", "TestProp-Desc", "TestProp-Def")
 ```
 To understand which arguments are available and mandatory it is advisable to have a look at the [STA-Docs](https://developers.sensorup.com/docs/) and/or use the interactive mode stapy.
 

@@ -22,7 +22,7 @@ class Query(object):
         :param entity: entity that contains the relevant information
         """
         if entity not in Entity:
-            raise Exception("Invalid entity: " + entity.value)
+            raise Exception("Invalid entity: " + str(entity))
         self._sel_entity = entity.value
         self._selectors = []
         self._params = []
@@ -34,7 +34,6 @@ class Query(object):
         :param selectors: a tuple strings that can contain "." where the first part of each string is the top-level attribute
         :return: self to allow command-chaining
         """
-
         if len(selectors) == 0:
             raise Exception("no selectors provided")
 
@@ -42,7 +41,10 @@ class Query(object):
         for selector in selectors:
             if not isinstance(selector, str):
                 raise Exception("invalid selector")
-            sel_split = selector.split(".")
+            if "@iot.id" == selector:
+                sel_split = [selector]
+            else:
+                sel_split = selector.split(".")
             sel = sel_split[0]
             if not sel in sels:
                 sels.append(sel)
@@ -157,11 +159,12 @@ class Query(object):
         if len(self._selectors) == 0:
             return []
         data_sets = [[] for _ in range(len(self._selectors))]
+        path = self.get_query()
         count = 0
         finished = False
         is_list = True
         while True:
-            url = self.urlopen_with_retry(self.get_query())
+            url = self.urlopen_with_retry(path)
             data = json.loads(url.read().decode())
             try:
                 payload = data["value"]
@@ -188,7 +191,7 @@ class Query(object):
                 if finished or "@iot.nextLink" not in data:
                     break
                 else:
-                    self._path = data["@iot.nextLink"]
+                    path = data["@iot.nextLink"]
             else:
                 for idx, selector in enumerate(self._selectors):
                     val = payload
@@ -205,7 +208,7 @@ class Query(object):
             return data_sets[0]
         else:
             return tuple(data_sets)
-
+    
     def _build_entity(self):
         """
         Build the entity string for the query with the defined entity and possible entity_id and sub_entity

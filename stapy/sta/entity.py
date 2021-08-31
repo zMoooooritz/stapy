@@ -26,7 +26,7 @@ class Entity(Enum):
     @staticmethod
     def list():
         """
-        :return: a list of all entities as strings
+        :return: a list of all entity values
         """
         return list(map(lambda e: e.value, Entity))
 
@@ -44,6 +44,7 @@ class Entity(Enum):
             return cls.__singular_map()[entity]
         return entity.value
 
+    # TODO take care of MultiDatastream and HistoricLocation
     @classmethod
     def match(cls, entity):
         """
