@@ -1,10 +1,9 @@
-from stapy.sta.query import Query
-from stapy.sta.entity import Entity
-from stapy.sta.post import Post
-from stapy.common.config import config
-
 import requests
 import re
+
+from stapy.sta.query import Query
+from stapy.sta.entity import Entity
+from stapy.common.config import config
 
 class Delete(object):
     """
@@ -22,7 +21,10 @@ class Delete(object):
             ids = [ids]
         for e_id in ids:
             if str(e_id).isdigit():
-                requests.delete(Query(entity).entity_id(int(e_id)).get_query())
+                try:
+                    requests.delete(Query(entity).entity_id(int(e_id)).get_query())
+                except Exception:
+                    raise Exception("the supplied API_URL \"" + config.get("API_URL") + "\" is not valid")
 
     @staticmethod
     def query(path):

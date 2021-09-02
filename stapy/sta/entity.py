@@ -1,4 +1,5 @@
 from enum import Enum
+import Levenshtein as lev
 
 class Entity(Enum):
     """
@@ -28,7 +29,7 @@ class Entity(Enum):
         """
         :return: a list of all entity values
         """
-        return list(map(lambda e: e.value, Entity))
+        return [entity.value for entity in Entity]
 
     @classmethod
     def remap(cls, entity):
@@ -38,8 +39,8 @@ class Entity(Enum):
         :param entity: the entity to remap
         :return: the remapped entity
         """
-        if entity not in Entity:
-            raise Exception("invalid entity: " + entity.value)
+        if not isinstance(entity, Entity):
+            raise Exception("invalid entity: " + entity)
         if entity in cls.__singular_map():
             return cls.__singular_map()[entity]
         return entity.value
@@ -53,13 +54,5 @@ class Entity(Enum):
         :param entity: the string to find the entity for
         :return: the entity or None
         """
-        ent_search = entity.lower()
-        for entity in Entity:
-            ent_is = entity.value.lower()
-            if ent_is in ent_search or ent_search in ent_is:
-                return entity
-        for entity, ent_val in cls.__singular_map().items():
-            ent_is = ent_val.lower()
-            if ent_is in ent_search or ent_search in ent_is:
-                return entity
-        return None
+        max_ent = max(Entity, key=lambda x: lev.ratio(entity.lower(), x.value.lower()))
+        return max_ent if lev.ratio(entity.lower(), max_ent.value.lower()) > 0.5 else None

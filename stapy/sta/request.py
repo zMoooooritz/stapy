@@ -14,4 +14,4 @@ class Request(Enum):
         """
         :return: a list of all request values
         """
-        return list(map(lambda r: r.value, Request))
+        return [request.value for request in Request]

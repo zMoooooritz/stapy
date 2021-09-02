@@ -1,6 +1,6 @@
-from stapy.sta.entity import Entity
-
 import unittest
+
+from stapy.sta.entity import Entity
 
 class TestSTAMethods(unittest.TestCase):
 
@@ -9,7 +9,7 @@ class TestSTAMethods(unittest.TestCase):
 
     def test_list(self):
         self.assertEqual(len(Entity.list()), len(Entity))
-        self.assertEqual(Entity.list()[0], Entity.Datastream.value)
+        self.assertIn(Entity.Datastream.value, Entity.list())
 
     def test_remap(self):
         self.assertEqual(Entity.remap(Entity.Datastream), Entity.Datastream.value)
@@ -21,8 +21,8 @@ class TestSTAMethods(unittest.TestCase):
         self.assertEqual(Entity.match("datastream"), Entity.Datastream)
         self.assertEqual(Entity.match("sens"), Entity.Sensor)
         self.assertEqual(Entity.match("ObservedPropertiess"), Entity.ObservedProperty)
-        self.assertEqual(Entity.match("xyz"), None)
-
+        self.assertEqual(Entity.match("muldatastream"), Entity.MultiDatastream)
+        self.assertIsNone(Entity.match("xyz"))
 
 if __name__ == '__main__':
     unittest.main()

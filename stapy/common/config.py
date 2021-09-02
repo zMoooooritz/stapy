@@ -15,10 +15,10 @@ class Config:
     def read(self):
         try:
             self.config.read(self.FILENAME)
-        except configparser.Error:
-            logger.critical("Config file does not exist")
-            logger.info("ending application")
-            sys.exit()
+        except Exception:
+            logger.error("Config file does not exist creating empty config file")
+            self.set(API_URL = "")
+            self.save()
 
     def save(self):
         try:

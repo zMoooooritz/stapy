@@ -202,7 +202,7 @@ class Post(object):
         :param loc_coords: coordinates formatted according to the defined type in loc_type
         :return: the ID of the newly created Location
         """
-        if not GeoJSON.is_valid(loc_type, loc_coords):
+        if not GeoJSON.is_valid(GeoJSON.match(loc_type), loc_coords):
             return -1, False
 
         payload = {
@@ -283,7 +283,10 @@ class Post(object):
         :param payload: the content of the message
         :return: the ID of the created entity
         """
-        resp = requests.post(path, json=payload)
+        try:
+            resp = requests.post(path, json=payload)
+        except Exception:
+            raise Exception("the supplied API_URL \"" + config.get("API_URL") + "\" is not valid")
         loc = resp.headers["location"]
         entity_id = int(loc[loc.find("(")+1:loc.find(")")])
         return entity_id

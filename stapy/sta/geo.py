@@ -1,6 +1,6 @@
 from enum import Enum
-
 import geojson
+import Levenshtein as lev
 
 class GeoJSON(Enum):
     """
@@ -18,41 +18,34 @@ class GeoJSON(Enum):
         """
         :return: a list of all GeoJSON objects as strings
         """
-        return list(map(lambda e: e.value, GeoJSON))
+        return [geo.value for geo in GeoJSON]
 
     @classmethod
     def is_valid(cls, obj, params):
         """
         :return: if the given obj and params build up a valid geojson object
         """
-        if not cls.__is_valid_obj(obj):
+        if not isinstance(obj, GeoJSON):
             print("The given object is not a valid GeoJSON object: " + str(obj))
             return False
-        if not cls.__has_valid_params(obj, params):
-            print("The given params \"" + str(params) + "\" are not valid for the GeoJSON object: " + str(obj))
-            return False
-        return True
 
-    @staticmethod
-    def __is_valid_obj(obj):
-        """
-        :return: if the specified obj ist a valid geojson object
-        """
-        if obj not in GeoJSON.list():
-            return False
-        return True
-
-    @staticmethod
-    def __has_valid_params(obj, params):
-        """
-        :return: if the given obj and params build up a valid geojson object
-        """                        
         switch = {
-            "Point":            geojson.Point(params).is_valid,
-            "MultiPoint":       geojson.MultiPoint(params).is_valid,
-            "LineString":       geojson.LineString(params).is_valid,
-            "MultiLineString":  geojson.MultiLineString(params).is_valid,
-            "Polygon":          geojson.Polygon(params).is_valid,
-            "MultiPolygon":     geojson.MultiPolygon(params).is_valid
+            GeoJSON.Point:            geojson.Point(params).is_valid,
+            GeoJSON.MultiPoint:       geojson.MultiPoint(params).is_valid,
+            GeoJSON.LineString:       geojson.LineString(params).is_valid,
+            GeoJSON.MultiLineString:  geojson.MultiLineString(params).is_valid,
+            GeoJSON.Polygon:          geojson.Polygon(params).is_valid,
+            GeoJSON.MultiPolygon:     geojson.MultiPolygon(params).is_valid
         }
         return switch.get(obj, False)
+
+    @classmethod
+    def match(cls, obj):
+        """
+        This method takes a string obj and tries to find the GeoJSON object,
+        whose value matches the provided string
+        :param entity: the string to find the GeoJSON object for
+        :return: the object or None
+        """
+        max_obj = max(GeoJSON, key=lambda x: lev.ratio(obj.lower(), x.value.lower()))
+        return max_obj if lev.ratio(obj.lower(), max_obj.value.lower()) > 0.5 else None

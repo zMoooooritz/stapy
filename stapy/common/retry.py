@@ -34,7 +34,5 @@ def retry(exception_to_check, tries=4, delay=3, backoff=2):
                     mtries -= 1
                     mdelay *= backoff
             return f(*args, **kwargs)
-
         return f_retry  # true decorator
-
     return deco_retry
