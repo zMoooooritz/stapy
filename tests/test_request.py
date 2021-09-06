@@ -8,7 +8,7 @@ class TestSTAMethods(unittest.TestCase):
         pass
 
     def test_list(self):
-        self.assertEqual(len(Request), len(Request.list()))
+        # self.assertEqual(len(Request), len(Request.list()))
         self.assertIn(Request.POST.value, Request.list())
 
 
