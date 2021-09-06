@@ -1,5 +1,6 @@
 
+# TODO fix entities modeling
+# TODO parameters where possible
 # TODO configparse with packaging?!
 # TODO add documentation (and readme)
 # TODO add more tests
-# TODO allow for patch / update

@@ -6,9 +6,9 @@ class Entity(Enum):
     This class represents all available entities in the SensorThingsAPI (v1.1)
     """
     Datastream = "Datastreams"
-    MultiDatastream = "MultiDatastreams"
+    # MultiDatastream = "MultiDatastreams"
     FeatureOfInterest = "FeaturesOfInterest"
-    HistoricalLocation = "HistoricalLocations"
+    # HistoricalLocation = "HistoricalLocations"
     Location = "Locations"
     Observation = "Observations"
     ObservedProperty = "ObservedProperties"
@@ -45,7 +45,6 @@ class Entity(Enum):
             return cls.__singular_map()[entity]
         return entity.value
 
-    # TODO take care of MultiDatastream and HistoricLocation
     @classmethod
     def match(cls, entity):
         """

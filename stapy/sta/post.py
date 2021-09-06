@@ -2,10 +2,10 @@ from stapy.sta.query import Query
 from stapy.sta.entity import Entity
 from stapy.sta.geo import GeoJSON
 from stapy.common.config import config
+from stapy.sta.abstract_request import AbstractRequest
 
-import requests
 
-class Post(object):
+class Post(AbstractRequest):
     """
     This static class allows to create new entities on a STA-Server by sending POST-Requests with according content
     """
@@ -184,11 +184,12 @@ class Post(object):
         :param definition: the definition for the ObservedProperty
         :return: the ID of the newly created ObservedProperty
         """
-        payload = {
-            "name": name,
-            "description": description,
-            "definition": definition,
-        }
+        ob_prop = ent.ObservedProperty(Request.POST)
+        ob_prop.set_param(name=name)
+        ob_prop.set_param(description=description)
+        ob_prop.set_param(definition=definition)
+        payload = ob_prop.get_data()
+
         path = Query(Entity.ObservedProperty).get_query()
         return Post.send_request(path, payload), True
 
@@ -274,19 +275,3 @@ class Post(object):
         for k, v in zip(key, value):
             payload[name][k] = v
         return payload
-
-    @staticmethod
-    def send_request(path, payload):
-        """
-        Given a path and payload this method creates a HTTP-Post with the given data
-        :param path: the SensorThingsAPI-URL to add the data to
-        :param payload: the content of the message
-        :return: the ID of the created entity
-        """
-        try:
-            resp = requests.post(path, json=payload)
-        except Exception:
-            raise Exception("the supplied API_URL \"" + config.get("API_URL") + "\" is not valid")
-        loc = resp.headers["location"]
-        entity_id = int(loc[loc.find("(")+1:loc.find(")")])
-        return entity_id
