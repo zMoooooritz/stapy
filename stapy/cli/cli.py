@@ -3,6 +3,7 @@ from stapy.sta.post import Post
 from stapy.sta.delete import Delete
 from stapy.sta.request import Request
 from stapy.sta.patch import Patch
+from stapy.sta.abstract_request import AbstractRequest
 
 from PyInquirer import prompt
 from inspect import signature
@@ -72,45 +73,33 @@ def delete_request():
         Delete.query(result["value"])
 
 def post_request(entity):
-    func = Post.get_entity_method(entity)
-    parameters = list(map(lambda param: param.name, signature(func).parameters.values()))
-    questions = []
-    for param in parameters:
-        questions.append(construct_input_question(name=param, message=param.capitalize() + ":")[0])
-
-    answers = prompt(questions)
-    args = []
-    for param in parameters:
-        args.append(answers[param])
-
-    Post.entity(entity, *args)
+    Post.entity(entity, **build_entity(entity))
 
 def patch_request(entity):
-    ent = Patch.get_entity(entity)()
-
     question = construct_input_question(type="input",
         message="ID of the " + entity.value + " to operate on:")
     entity_id = prompt(question)["value"]
 
+    Patch.entity(entity, entity_id, **build_entity(entity))
+
+def get_request():
+    raise NotImplementedError
+
+def build_entity(entity):
+    ent = AbstractRequest.get_entity(entity)()
     req_attributes = ent.req_attributes()
-    questions = []
-    for req in req_attributes:
-        questions.append(construct_input_question(name=req, message=req.capitalize() + ":")[0])
-
-    req_answers = prompt(questions)
-    args = {}
-
     opt_attributes = ent.opt_attributes()
+
+    req_answers = question_block(req_attributes)
+
     optional = False
     if len(opt_attributes) > 0:
         question = construct_input_question("confirm", message="Do you want to add optional parameters?")
         optional = prompt(question)["value"]
 
+    args = {}
     if optional:
-        questions = []
-        for opt in opt_attributes:
-            questions.append(construct_input_question(name=opt, message=opt.capitalize() + ":")[0])
-        opt_answers = prompt(questions)
+        opt_answers = question_block(opt_attributes)
         for opt in opt_attributes:
             args.update({opt: opt_answers[opt]})
 
@@ -121,7 +110,15 @@ def patch_request(entity):
     for k, v in args.items():
         if v != "":
             final_args.update({k: v})
-    Patch.entity(entity, entity_id, **final_args)
+    return final_args
 
-def get_request():
-    raise NotImplementedError
+def question_block(attributes):
+    questions = []
+    for attribute in attributes:
+        questions.append(construct_input_question(name=attribute, message=cap_first(attribute) + ":")[0])
+    return prompt(questions)
+
+def cap_first(string):
+    if not isinstance(string, str) or len(string) <= 1:
+        return ""
+    return string[0].upper() + string[1:]
