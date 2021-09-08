@@ -24,21 +24,13 @@ class AbstractRequest(metaclass=abc.ABCMeta):
     @staticmethod
     def cast_params(**params):
         final_params = {}
-        for k, v in params:
+        for k, v in params.items():
             if v is None:
                 continue
+
             if "_id" in k:
                 entity = Entity.match(k.split("_")[0]).value
-                if isinstance(v, dict):
-                    final_params.update({entity: v})
-                    continue
-                if not isinstance(v, list):
-                    final_params.update({entity: {"@iot.id": v}})
-                else:
-                    ids = []
-                    for value in v:
-                        ids.append({"@iot.id": value})
-                    final_params.update({entity: ids})
+                final_params.update({entity: v})
             else:
                 final_params.update({k: v})
         return final_params

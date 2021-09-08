@@ -5,7 +5,7 @@ class Thing(AbstractEntity):
     entry_map = {
         "name": (True, str),
         "description": (True, str),
-        "properties": (True, dict),
+        "properties": (False, dict),
         "Locations": (False, {
             "@iot.id": (True, int)
         }),

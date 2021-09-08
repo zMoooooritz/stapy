@@ -3,6 +3,7 @@ from stapy.sta.entity import Entity
 from stapy.sta.geo import GeoJSON
 from stapy.common.config import config
 from stapy.sta.abstract_request import AbstractRequest
+from stapy.sta.request import Request
 
 
 class Post(AbstractRequest):
@@ -11,7 +12,8 @@ class Post(AbstractRequest):
     """
 
     @staticmethod
-    def datastream(name, description, observation_type, unit, op_id, s_id, t_id, key=None, value=None):
+    def datastream(name, description, unit_of_measurement, observation_type,
+        thing_id, observed_property_id, sensor_id, properties=None):
         """
         Create a new Datastream with the given data filled in
         key and value have to be of the same length and will be handled as map afterwards
@@ -26,25 +28,12 @@ class Post(AbstractRequest):
         :param value: a list of values that contain additional information of the Datastream
         :return: the ID of the newly created Datastream
         """
-        payload = {
-            "name": name,
-            "description": description,
-            "observationType": observation_type,
-            "unitOfMeasurement": unit,
-            "ObservedProperty": {
-                "@iot.id": op_id
-            },
-            "Sensor": {
-                "@iot.id": s_id
-            },
-            "Thing": {
-                "@iot.id": t_id
-            }
-        }
-        payload = Post.append_props(payload, "properties", key, value)
-        path = Query(Entity.Datastream).get_query()
-        return Post.send_request(path, payload), True
+        params = Post.cast_params(description=description, unit_of_measurement=unit_of_measurement,
+            observation_type=observation_type, properties=properties, thing_id=thing_id,
+            observed_property_id=observed_property_id, sensor_id=sensor_id)
+        return Post.entity(Entity.Datastream, **params)
 
+    # TODO remove or keep and improve
     @staticmethod
     def full_datastream(name, description, long_name, obv_type, unit, ob_prop, loc_type, loc_coords, key=None, value=None):
         """
@@ -60,6 +49,7 @@ class Post(AbstractRequest):
         :param value: a list of values that contain additional information of the Datastream
         :return: the ID of the newly created Datastream
         """
+        raise NotImplementedError
         l_id, err = Post.location(name, long_name, loc_type, loc_coords)
         if err != True:
             return -1, False
@@ -76,7 +66,7 @@ class Post(AbstractRequest):
         return Post.datastream(name, description, obv_type, unit, o_id, s_id, t_id, key, value), True
 
     @staticmethod
-    def feature_of_interest(name, description="", encodingType="", feature=""):
+    def feature_of_interest(name, description, encoding_type, feature, properties=None):
         """
         Create a new FeatureOfInterest with the given data filled in
         :param name: the name for the FeatureOfInterest
@@ -85,17 +75,33 @@ class Post(AbstractRequest):
         :param feature: the relevant feature for an observation
         :return: the ID of the newly created FeatureOfInterest
         """
-        payload = {
-            "name": name,
-            "description": description,
-            "encodingType": encodingType,
-            "feature": feature
-        }
-        path = Query(Entity.FeatureOfInterest).get_query()
-        return Post.send_request(path, payload), True
+        params = Post.cast_params(name=name, description=description, encoding_type=encoding_type, feature=feature, properties=properties)
+        return Post.entity(Entity.FeatureOfInterest, **params)
 
     @staticmethod
-    def observation(result, time, d_id, key=None, value=None):
+    def location(name, description, encoding_type, location, properties=None, thing_id=None):
+        """
+        Create a new Location with the given data filled in
+        :param name: the name for the Location
+        :param description: the description for the Location
+        :param loc_type: the type of location according to the GeoJSON-Standard
+        :param loc_coords: coordinates formatted according to the defined type in loc_type
+        :return: the ID of the newly created Location
+        """
+        params = Post.cast_params(name=name, description=description, encoding_type=encoding_type, location=location,
+            properties=properties, thing_id=thing_id)
+        return Post.entity(Entity.Location, **params)
+
+    def location(name, description, encoding_type, loc_type, loc_coords, properties=None, thing_id=None):
+        location = {
+            "type": loc_type,
+            "coordinates": loc_coords
+        }
+        return Post.location(name, description, encoding_type, location, properties=properties, thing_id=thing_id)
+
+    @staticmethod
+    def observation(phenomenon_time, result, result_quality=None, valid_time=None, parameters=None,
+        datastream_id=None, feature_of_interest_id=None):
         """
         Create a new Observation with the given data filled in
         key and value have to be of the same length and will be handled as map afterwards
@@ -106,18 +112,12 @@ class Post(AbstractRequest):
         :param value: a list of values that contain additional information of the Observation
         :return: the ID of the newly created Observation
         """
-        payload = {
-            "result": result,
-            "phenomenonTime": time,
-            "resultTime": time,
-            "Datastream": {
-                "@iot.id": d_id
-            }
-        }
-        payload = Post.append_props(payload, "parameters", key, value)
-        path = Query(Entity.Observation).get_query()
-        return Post.send_request(path, payload), True
+        params = Post.cast_params(phenomenon_time=phenomenon_time, result=result,
+            result_quality=result_quality, valid_time=valid_time, parameters=parameters,
+            datastream_id=datastream_id, feature_of_interest_id=feature_of_interest_id)
+        Post.entity(EntityObservation, **params)
 
+    # TODO remove or keep and improve
     @staticmethod
     def observations(results, times, d_id, keys=None, values=None):
         """
@@ -130,6 +130,7 @@ class Post(AbstractRequest):
         :param values: a list of list of values that contain additional information of the Observation
         :return: None
         """
+        raise NotImplementedError
         payload = {
             "Datastream": {
                 "@iot.id": d_id
@@ -153,12 +154,23 @@ class Post(AbstractRequest):
                 payload["components"].append("parameters")
                 for v_idx, value in enumerate(values[idx]):
                     payload["dataArray"][v_idx].append({key: value})
-
         path = config.get("API_URL") + "CreateObservations"
         requests.post(path, json=[payload])
 
     @staticmethod
-    def sensor(name, description="", encodingType="", metadata=""):
+    def observed_property(name, description, definition, properties=None):
+        """
+        Create a new ObservedProperty with the given data filled in
+        :param name: the name for the ObservedProperty
+        :param definition: the definition for the ObservedProperty
+        :return: the ID of the newly created ObservedProperty
+        """
+        params = Post.cast_params(name=name, description=description, definition=definition,
+            properties=properties)
+        return Post.entity(Entity.ObservedProperty, **params)
+
+    @staticmethod
+    def sensor(name, description, encoding_type=None, metadata=None, properties=None):
         """
         Create a new Sensor with the given data filled in
         :param name: the name for the Sensor
@@ -167,59 +179,12 @@ class Post(AbstractRequest):
         :param metadata: the metadata of the Sensor
         :return: the ID of the newly created Sensor
         """
-        payload = {
-            "name": name,
-            "description": description,
-            "encodingType": encodingType,
-            "metadata": metadata
-        }
-        path = Query(Entity.Sensor).get_query()
-        return Post.send_request(path, payload), True
+        params = Post.cast_params(name=name, description=description, encoding_type=encoding_type,
+            metadata=metadata, properties=None)
+        return Post.entity(Entity.Sensor, **params)
 
     @staticmethod
-    def observed_property(name, description, definition):
-        """
-        Create a new ObservedProperty with the given data filled in
-        :param name: the name for the ObservedProperty
-        :param definition: the definition for the ObservedProperty
-        :return: the ID of the newly created ObservedProperty
-        """
-        ob_prop = ent.ObservedProperty(Request.POST)
-        ob_prop.set_param(name=name)
-        ob_prop.set_param(description=description)
-        ob_prop.set_param(definition=definition)
-        payload = ob_prop.get_data()
-
-        path = Query(Entity.ObservedProperty).get_query()
-        return Post.send_request(path, payload), True
-
-    @staticmethod
-    def location(name, description, loc_type, loc_coords, encodingType=""):
-        """
-        Create a new Location with the given data filled in
-        :param name: the name for the Location
-        :param description: the description for the Location
-        :param loc_type: the type of location according to the GeoJSON-Standard
-        :param loc_coords: coordinates formatted according to the defined type in loc_type
-        :return: the ID of the newly created Location
-        """
-        if not GeoJSON.is_valid(GeoJSON.match(loc_type), loc_coords):
-            return -1, False
-
-        payload = {
-            "name": name,
-            "description": description,
-            "encodingType": encodingType,
-            "location": {
-                "type": loc_type,
-                "coordinates": loc_coords
-            }
-        }
-        path = Query(Entity.Location).get_query()
-        return Post.send_request(path, payload), True
-
-    @staticmethod
-    def thing(name, description, loc_id):
+    def thing(name, description, properties=None, location_id=None, datastream_id=None):
         """
         Create a new Thing with the given data filled in
         :param name: the name for the Thing
@@ -227,51 +192,14 @@ class Post(AbstractRequest):
         :param loc_id: the ID of the associated Location
         :return: the ID of the newly created Thing
         """
-        payload = {
-            "name": name,
-            "description": description,
-            "Locations": [
-                {
-                    "@iot.id": loc_id
-                }
-            ]
-        }
-        path = Query(Entity.Thing).get_query()
-        return Post.send_request(path, payload), True
+        params= Post.cast_params(name=name, description=description, properties=properties,
+            location_id=location_id, datastream_id=datastream_id)
+        return Post.entity(Entity.Thing, **params)
 
     @staticmethod
-    def get_entity_method(entity):
-        switch = {
-            Entity.Datastream: Post.datastream,
-            Entity.FeatureOfInterest: Post.feature_of_interest,
-            Entity.Location: Post.location,
-            Entity.Observation: Post.observation,
-            Entity.ObservedProperty: Post.observed_property,
-            Entity.Sensor: Post.sensor,
-            Entity.Thing: Post.thing
-        }
-        return switch.get(entity)
-   
-    @staticmethod
-    def entity(entity, *args):
-        return Post.get_entity_method(entity)(*args)
-
-    @staticmethod
-    def append_props(payload, name, key=None, value=None):
-        """
-        This class takes a dict and adds a key-value pairs in the attribute name in the dict
-        :param payload: the dict with the base data
-        :param name: the attribute which contains the key-value data
-        :param key: a list of keys
-        :param value: a list of values for the given keys
-        :return: the dict that is extended by the defined data
-        """
-        if key is None and value is None:
-            return payload
-        if not isinstance(key, list) and not isinstance(value, list):
-            key = [key]
-            value = [value]
-        payload[name] = {}
-        for k, v in zip(key, value):
-            payload[name][k] = v
-        return payload
+    def entity(entity, **params):
+        ent = Post.get_entity(entity)(Request.POST)
+        ent.set_param(**params)
+        payload = ent.get_data()
+        path = Query(entity).get_query()
+        return Post.send_request(Request.POST, path, payload)

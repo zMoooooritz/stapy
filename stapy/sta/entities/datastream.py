@@ -1,6 +1,8 @@
 
 from stapy.sta.abstract_entity import AbstractEntity
 
+# TODO unitOfMeasurement {name, symbol, definition}
+# TODO what about values that cannot be set (resultTime, observedArea, phenomenonTime)
 class Datastream(AbstractEntity):
     entry_map = {
         "name": (True, str),
@@ -10,6 +12,7 @@ class Datastream(AbstractEntity):
         "observedArea": (False, object),
         "phenomenonTime": (False, str),
         "resultTime": (False, str),
+        "properties": (False, dict),
         "Thing": (True, {
             "@iot.id": (True, int)
         }),

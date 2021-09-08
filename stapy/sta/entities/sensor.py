@@ -6,7 +6,8 @@ class Sensor(AbstractEntity):
         "name": (True, str),
         "description": (True, str),
         "encodingType": (True, str),
-        "metadata": (True, object)
+        "metadata": (True, object),
+        "properties": (False, dict)
     }
 
     def check_entry(self, key, value):

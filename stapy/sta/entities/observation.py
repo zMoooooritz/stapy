@@ -5,7 +5,7 @@ class Observation(AbstractEntity):
     entry_map = {
         "phenomenonTime": (True, str),
         "result": (True, object),
-        "resultTime": (True, str),
+        "resultTime": (False, str),
         "resultQuality": (False, dict),
         "validTime": (False, str),
         "parameters": (False, dict),

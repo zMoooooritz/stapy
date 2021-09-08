@@ -11,6 +11,7 @@ class Location(AbstractEntity):
             "type": (True, GeoJSON),
             "coordinates": (True, list)
         }),
+        "properties": (False, dict),
         "Things": (False, {
             "@iot.id": (True, int)
         }),
@@ -24,6 +25,8 @@ class Location(AbstractEntity):
             geo = value.get("type")
             coords = value.get("coordinates")
 
+            if not isinstance(geo, GeoJSON):
+                geo = GeoJSON.match(geo)
             if not GeoJSON.is_valid(geo, coords):
                 return False
 

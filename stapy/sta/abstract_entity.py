@@ -1,7 +1,8 @@
 import abc
 
-from stapy.common.defaults import default
+from stapy.common.util import cast, un_cast, default
 from stapy.sta.request import Request
+from stapy.sta.entity import Entity
 
 class AbstractEntity(metaclass=abc.ABCMeta):
 
@@ -13,46 +14,69 @@ class AbstractEntity(metaclass=abc.ABCMeta):
             self.setup_json()
 
     def setup_json(self):
-        for k, v in self.entry_map.items():
-            if not v[0]:
+        for k, (val_req, val_type) in self.entry_map.items():
+            if not val_req:
                 continue
-            if isinstance(v[1], dict):
+            if isinstance(val_type, dict):
                 self.json.update({k: {}})
             else:
-                self.json.update({k: default.get(v[1])})
+                self.json.update({k: default(val_type)})
 
     def set_param(self, **data):
-        self.json = self.update_json(self.entry_map, self.json, **data)
+        self.json = self._update_json(self.entry_map, self.json, **data)
 
-    def update_json(self, template, json, **data):
-        for k, v in template.items():
-            value = v[1]
+    def _update_json(self, template, result, **data):
+        for k, (val_req, val_type) in template.items():
             if k not in data.keys():
                 continue
 
-            # base case
-            if not isinstance(value, dict):
-                if isinstance(data.get(k), value):
-                    if not self.check_entry(k, data.get(k)):
-                        print("The provided value (" + str(data.get(k))
-                            + ") does not satisfy the requirements ignoring value")
-                        continue
-                    json.update({k: data.get(k)})
+            val_is = data.get(k)
+            # TODO singular / plural
+            if k in Entity.list():
+                if isinstance(val_is, dict):
+                    result.update({k: val_is})
+                elif not isinstance(val_is, list):
+                    result.update({k: {"@iot.id": val_is}})
                 else:
-                    print("The provided value (" + str(data.get(k)) + ") is not of type "
-                        + str(v) + " ignoring value")
+                    ids = []
+                    for value in val_is:
+                        ids.append({"@iot.id": value})
+                    result.update({k: ids})
+                continue
+
+            # base case
+            print(data)
+            if not isinstance(val_type, dict):
+                # cast data
+                if not isinstance(val_is, val_type):
+                    try:
+                        val_is = cast(val_type, val_is)
+                    except Exception:
+                        print("The provided value (" + str(val_is) + ") is not of type "
+                            + str(val_type) + " ignoring value")
+                        continue
+
+                if not self.check_entry(k, val_is):
+                    print("The provided value (" + str(val_is)
+                        + ") does not satisfy the requirements ignoring value")
+                    continue
+                result.update({k: un_cast(val_is)})
             # recursion
             else:
-                if not isinstance(data.get(k), dict):
+                if not isinstance(val_is, dict):
                     print("The data for (" + k + ") needs to be a dict ignoring data")
                     continue
 
-                if not self.check_entry(k, data.get(k)):
-                    print("The provided value (" + str(data.get(k))
+                if not self.check_entry(k, val_is):
+                    print("The provided value (" + str(val_is)
                         + ") does not satisfy the requirements ignoring value")
                     continue
-                json.update({k: self.check_set_json(value, json.get(k), **data.get(k))})
-        return json
+
+                if k in result.values():
+                    result.update({k: self._update_json(val_type, result.get(k), **data.get(k))})
+                else:
+                    result.update({k: self._update_json(val_type, {}, **data.get(k))})
+        return result
 
     @abc.abstractmethod
     def check_entry(self, **kwargs):
