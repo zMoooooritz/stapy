@@ -6,9 +6,9 @@ class Entity(Enum):
     This class represents all available entities in the SensorThingsAPI (v1.1)
     """
     Datastream = "Datastreams"
-    MultiDatastream = "MultiDatastreams"
+    # MultiDatastream = "MultiDatastreams"
     FeatureOfInterest = "FeaturesOfInterest"
-    HistoricalLocation = "HistoricalLocations"
+    # HistoricalLocation = "HistoricalLocations"
     Location = "Locations"
     Observation = "Observations"
     ObservedProperty = "ObservedProperties"
@@ -45,9 +45,8 @@ class Entity(Enum):
             return cls.__singular_map()[entity]
         return entity.value
 
-    # TODO take care of MultiDatastream and HistoricLocation
     @classmethod
-    def match(cls, entity):
+    def match(cls, entity, threshold=0.5):
         """
         This method takes a string entity and tries to find the Entity,
         whose value matches the provided string
@@ -55,4 +54,4 @@ class Entity(Enum):
         :return: the entity or None
         """
         max_ent = max(Entity, key=lambda x: lev.ratio(entity.lower(), x.value.lower()))
-        return max_ent if lev.ratio(entity.lower(), max_ent.value.lower()) > 0.5 else None
+        return max_ent if lev.ratio(entity.lower(), max_ent.value.lower()) > threshold else None

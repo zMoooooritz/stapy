@@ -14,4 +14,5 @@ class Request(Enum):
         """
         :return: a list of all request values
         """
-        return [request.value for request in Request]
+        # return [request.value for request in Request]
+        return ["POST", "PATCH", "DELETE"]
