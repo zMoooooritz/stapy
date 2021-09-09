@@ -27,25 +27,39 @@ class AbstractEntity(metaclass=abc.ABCMeta):
 
     def _update_json(self, template, result, **data):
         for k, (val_req, val_type) in template.items():
+
+            ent = Entity.match(k, threshold=0.5) # 0.8 too big?!
+            if ent is not None and k[0].isupper():
+                val_is = data.get(ent.value)
+                if val_is is None:
+                    continue
+
+                # singular
+                if k != ent.value:
+                    if isinstance(val_is, dict):
+                        result.update({k: val_is})
+                    else:
+                        if isinstance(val_is, list):
+                            val_is = val_is[0]
+                        result.update({k: {"@iot.id": val_is}})
+                # plural
+                else:
+                    if isinstance(val_is, dict):
+                        result.update({k: val_is})
+                    else:
+                        if not isinstance(val_is, list):
+                            val_is = [val_is]
+                        ids = []
+                        for value in val_is:
+                            ids.append({"@iot.id": value})
+                        result.update({k: ids})
+                continue
+
             if k not in data.keys():
                 continue
-
             val_is = data.get(k)
-            # TODO singular / plural
-            if k in Entity.list():
-                if isinstance(val_is, dict):
-                    result.update({k: val_is})
-                elif not isinstance(val_is, list):
-                    result.update({k: {"@iot.id": val_is}})
-                else:
-                    ids = []
-                    for value in val_is:
-                        ids.append({"@iot.id": value})
-                    result.update({k: ids})
-                continue
 
             # base case
-            print(data)
             if not isinstance(val_type, dict):
                 # cast data
                 if not isinstance(val_is, val_type):
@@ -79,7 +93,7 @@ class AbstractEntity(metaclass=abc.ABCMeta):
         return result
 
     @abc.abstractmethod
-    def check_entry(self, **kwargs):
+    def check_entry(self, key, value):
         raise NotImplementedError
     
     def req_attributes(self):

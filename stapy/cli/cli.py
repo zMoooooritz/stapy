@@ -6,7 +6,6 @@ from stapy.sta.patch import Patch
 from stapy.sta.abstract_request import AbstractRequest
 
 from PyInquirer import prompt
-from inspect import signature
 import logging
 
 logger = logging.getLogger('root')
