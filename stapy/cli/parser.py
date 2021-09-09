@@ -19,7 +19,7 @@ class Parser(object):
         parser = argparse.ArgumentParser(
             description="Access and modify data that is stored in a server that uses the SensorThings API (v1.1+)",
             prog="stapy", epilog="")
-        parser.add_argument("-l", "--log", type=Log.from_string, choices=list(Log), default=Log.INFO,
+        parser.add_argument("-l", "--log", type=Log.from_string, choices=list(Log), default=Log.WARNING,
                             help="define the log level", metavar="CRITICAL,ERROR,WARNING,INFO,DEBUG,NOTSET")
         parser.add_argument("-u", "--url-set", dest="urlset", nargs=1, metavar=("URL"),
                             help="set the url of the SensorThings API backend")

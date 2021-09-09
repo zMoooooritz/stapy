@@ -131,7 +131,6 @@ class Post(AbstractRequest):
         :param values: a list of list of values that contain additional information of the Observation
         :return: None
         """
-        raise NotImplementedError
         payload = {
             "Datastream": {
                 "@iot.id": d_id

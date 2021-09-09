@@ -5,8 +5,3 @@ from stapy.sta.entities.observedproperty import ObservedProperty
 from stapy.sta.entities.datastream import Datastream
 from stapy.sta.entities.sensor import Sensor
 from stapy.sta.entities.thing import Thing
-
-
-__all__ = (
-    [Location, FeatureOfInterest, Observation, ObservedProperty, Datastream, Sensor, Thing]
-)

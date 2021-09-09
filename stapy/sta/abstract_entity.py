@@ -6,11 +6,12 @@ from stapy.sta.entity import Entity
 
 class AbstractEntity(metaclass=abc.ABCMeta):
 
-    entry_map = {}
-    json = {}
+    entry_map = None
+    json = None
 
     def __init__(self, request=None):
-        if isinstance(request, Request) and request == Request.POST:
+        self.json = {}
+        if request == Request.POST:
             self.setup_json()
 
     def setup_json(self):

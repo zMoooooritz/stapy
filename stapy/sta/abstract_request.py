@@ -51,7 +51,12 @@ class AbstractRequest(metaclass=abc.ABCMeta):
                 resp = requests.patch(path, json=payload)
         except Exception:
             raise Exception("the supplied API_URL \"" + config.get("API_URL") + "\" is not valid")
-        if request == Request.POST:
+        if not resp.ok:
+            if "message" in resp.json():
+                print("Request was not successful (" + resp.json().get("message") + ")")
+            else:
+                print("An error ocurred, request failed")
+        elif request == Request.POST:
             loc = resp.headers["location"]
             entity_id = int(loc[loc.find("(")+1:loc.find(")")])
             return entity_id
