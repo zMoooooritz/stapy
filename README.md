@@ -11,14 +11,14 @@ A server implementation of the STA can be found here [FROST](https://github.com/
 
 ## Installation
 
-stapy is compatible with Python 3.6+ and the recommended way to install is via [pip](https://pip.pypa.io/en/stable/)
+`stapy` is compatible with Python 3.6+ and the recommended way to install is via [pip](https://pip.pypa.io/en/stable/)
 ```bash
 pip install stapy
 ```
 
 ## Usage
 
-stapy can be used both form the command line (in two different ways) and as a Python library.
+`stapy` can be used both form the command line (in two different ways) and as a Python library.
 
 ### API_URL
 
@@ -42,8 +42,7 @@ The interactive mode can be invoked in the following way.
 ```bash
 python -m stapy -i
 ```
-Currently it does only support `POST` and `DELETE` requests. (`PATCH` will be added)
-`GET` is not supported but can be used within a web-browser.
+Currently it does support `POST`, `PATCH` and `DELETE` requests.
 
 ### CLI - Normal
 
@@ -52,13 +51,14 @@ The *normal* command line mode is a bit more difficult to use but can be automat
 python -m stapy --help
 ```
 Should give sufficient information on how two use it properly.
-As the interactive mode it does currently only support `POST` and `DELETE` requests.
+As the interactive mode it does support `POST`, `PATCH` and `DELETE` requests.
 
 ### Library
 
 This is the Python interface to the SensorThings API (stapy is meant to be used as Python library).
+Therefore it supports all relevant requests (`POST`, `PATCH`, `DELETE` and `GET`).
 
-The relevant classes can be found within the files `entity.py`, `delete.py`, `post.py` and `query.py` in the `sta` sub-module.
+The relevant classes can be found within the files `entity.py`, `delete.py`, `post.py`, `patch.py` and `query.py` in the [sta](https://github.com/zMoooooritz/stapy/tree/master/stapy/sta) sub-module.
 
 The following syntax can be used to create new entities:
 ```python
@@ -77,8 +77,8 @@ Following is one example for a `GET` request:
 `results` afterwards contains **all** results of the present Observations in ascending order.\
 `times` contains the respective times for the results.
 
-stapy does support all query options that are available for the [STA](https://developers.sensorup.com/docs/#queryparameters).
+stapy does support all `GET` query options that are available for the [STA](https://developers.sensorup.com/docs/#queryparameters).
 Some examples are select, filter, orderby and skip. These can be chained together as seen in the example above.
 
 ## Development
-To build this project, run `python setup.py build`. To run the unit tests, run `python setup.py test`
+To build this project, run `python setup.py build`. To execute the unit tests, run `python setup.py test`
