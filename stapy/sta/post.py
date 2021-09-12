@@ -1,3 +1,5 @@
+import requests
+
 from stapy.sta.query import Query
 from stapy.sta.entity import Entity
 from stapy.common.config import config
@@ -24,30 +26,30 @@ class Post(AbstractRequest):
         :param properties: a dict of additional (meta-)data for the Datastream
         :return: the ID of the newly created Datastream
         """
-        params = Post.cast_params(description=description, unitOfMeasurement=unit_of_measurement,
+        params = Post.cast_params(name=name, description=description, unitOfMeasurement=unit_of_measurement,
             observationType=observation_type, properties=properties, thing_id=thing_id,
             observed_property_id=observed_property_id, sensor_id=sensor_id)
         return Post.entity(Entity.Datastream, **params)
 
     @staticmethod
-    def full_datastream(name, description, long_name, encoding_type, loc_type, loc_coords, definition, unit, ob_type):
+    def full_datastream(name, description, long_name, encoding_type, location, definition, unit, ob_type):
         """
         Create a new Datastream with all required and associated entities that contain the given data
         :param name: the name for the associated entities
         :param description: the description for the Datastream
         :param long_name: the description for the associated entities
         :param encoding_type: the encodingType for the Location and Sensor
-        :param loc_type: the type of location according to the GeoJSON-Standard
-        :param loc_coords: coordinates formatted according to the defined type in loc_type
+        :param loc_type: the location according to the GeoJSON-Standard
         :param definition: the definition for the ObservedProperty
         :param unit: the unit in which the entries of the Datastream are taken
         :param ob_type: the type of observations for the Datastream
         :return: the ID of the newly created Datastream
         """
-        l_id = Post.location(name, long_name, encoding_type, loc_type, loc_coords)
-        t_id = Post.thing(name, long_name, l_id)
+        l_id = Post.location(name, long_name, encoding_type, location)
+        t_id = Post.thing(name, long_name, location_id=l_id)
         o_id = Post.observed_property(name, long_name, definition)
         s_id = Post.sensor(name, long_name, encoding_type)
+        print(name, description, unit, ob_type, t_id, o_id, s_id)
 
         return Post.datastream(name, description, unit, ob_type, t_id, o_id, s_id)
 
@@ -81,24 +83,24 @@ class Post(AbstractRequest):
             properties=properties, thing_id=thing_id)
         return Post.entity(Entity.Location, **params)
 
-    @staticmethod
-    def location(name, description, encoding_type, loc_type, loc_coords, properties=None, thing_id=None):
-        """
-        Create a new Location with the given data filled in
-        :param name: the name for the Location
-        :param description: the description for the Location
-        :param encoding_type: the encodingType for the Location
-        :param loc_type: the type of location according to the GeoJSON-Standard
-        :param loc_coords: coordinates formatted according to the defined type in loc_type
-        :param properties: a dict of additional (meta-)data for the Location
-        :param thing_id: the ID of the associated Thing
-        :return: the ID of the newly created Location
-        """
-        location = {
-            "type": loc_type,
-            "coordinates": loc_coords
-        }
-        return Post.location(name, description, encoding_type, location, properties=properties, thing_id=thing_id)
+    # @staticmethod
+    # def location(name, description, encoding_type, loc_type, loc_coords, properties=None, thing_id=None):
+    #     """
+    #     Create a new Location with the given data filled in
+    #     :param name: the name for the Location
+    #     :param description: the description for the Location
+    #     :param encoding_type: the encodingType for the Location
+    #     :param loc_type: the type of location according to the GeoJSON-Standard
+    #     :param loc_coords: coordinates formatted according to the defined type in loc_type
+    #     :param properties: a dict of additional (meta-)data for the Location
+    #     :param thing_id: the ID of the associated Thing
+    #     :return: the ID of the newly created Location
+    #     """
+    #     location = {
+    #         "type": loc_type,
+    #         "coordinates": loc_coords
+    #     }
+    #     return Post.location(name, description, encoding_type, location, properties=properties, thing_id=thing_id)
 
     @staticmethod
     def observation(phenomenon_time, result, result_quality=None, valid_time=None, parameters=None,
@@ -117,7 +119,8 @@ class Post(AbstractRequest):
         params = Post.cast_params(phenomenonTime=phenomenon_time, result=result,
             resultQuality=result_quality, validTime=valid_time, parameters=parameters,
             datastream_id=datastream_id, feature_of_interest_id=feature_of_interest_id)
-        Post.entity(EntityObservation, **params)
+        print(params)
+        return Post.entity(Entity.Observation, **params)
 
     @staticmethod
     def observations(results, times, d_id, keys=None, values=None):

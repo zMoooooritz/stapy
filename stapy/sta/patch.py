@@ -27,7 +27,7 @@ class Patch(AbstractRequest):
         params = Patch.cast_params(description=description, name=name, unitOfMeasurement=unit_of_measurement,
             observationType=observation_type, properties=properties, thing_id=thing_id,
             observed_property_id=observed_property_id, sensor_id=sensor_id)
-        Patch.entity(Entity.Datastream, entity_id, **params)
+        return Patch.entity(Entity.Datastream, entity_id, **params)
 
     @staticmethod
     def feature_of_interest(entity_id, name=None, description=None, encoding_type=None, feature=None, properties=None):
@@ -42,7 +42,7 @@ class Patch(AbstractRequest):
         :return: the ID of the newly created FeatureOfInterest
         """
         params = Patch.cast_params(name=name, description=description, encodingType=encoding_type, feature=feature, properties=properties)
-        Patch.entity(Entity.FeatureOfInterest, entity_id, **params)
+        return Patch.entity(Entity.FeatureOfInterest, entity_id, **params)
 
     @staticmethod
     def location(entity_id, name=None, description=None, encoding_type=None, location=None,
@@ -60,27 +60,7 @@ class Patch(AbstractRequest):
         """
         params = Patch.cast_params(name=name, description=description, encodingType=encoding_type, location=location,
             properties=properties, thing_id=thing_id)
-        Patch.entity(Entity.Location, entity_id, **params)
-
-    @staticmethod
-    def location(entity_id, name, description, encoding_type, loc_type, loc_coords, properties=None, thing_id=None):
-        """
-        Update a Location with the given data
-        :param entity_id: the ID of the Location to patch
-        :param name: the name for the Location
-        :param description: the description for the Location
-        :param encoding_type: the encodingType for the Location
-        :param loc_type: the type of location according to the GeoJSON-Standard
-        :param loc_coords: coordinates formatted according to the defined type in loc_type
-        :param properties: a dict of additional (meta-)data for the Location
-        :param thing_id: the ID of the associated Thing
-        :return: the ID of the newly created Location
-        """
-        location = {
-            "type": loc_type,
-            "coordinates": loc_coords
-        }
-        Patch.location(entity_id, name, description, encoding_type, location, properties=properties, thing_id=thing_id)
+        return Patch.entity(Entity.Location, entity_id, **params)
 
     @staticmethod
     def observation(entity_id, phenomenon_time=None, result=None, result_quality=None, valid_time=None,
@@ -100,7 +80,7 @@ class Patch(AbstractRequest):
         params = Patch.cast_params(phenomenonTime=phenomenon_time, result=result,
             resultQuality=result_quality, validTime=valid_time, parameters=parameters,
             datastream_id=datastream_id, feature_of_interest_id=feature_of_interest_id)
-        Patch.entity(Entity.Observation, entity_id, **params)
+        return Patch.entity(Entity.Observation, entity_id, **params)
 
     @staticmethod
     def observed_property(entity_id, name=None, description=None, definition=None, properties=None):
@@ -114,7 +94,7 @@ class Patch(AbstractRequest):
         :return: the ID of the newly created ObservedProperty
         """
         params = Patch.cast_params(name=name, description=description, definition=definition, properties=properties)
-        Patch.entity(Entity.ObservedProperty, entity_id, **params)
+        return Patch.entity(Entity.ObservedProperty, entity_id, **params)
 
     @staticmethod
     def sensor(entity_id, name=None, description=None, encoding_type=None, metadata=None, properties=None):
@@ -129,7 +109,7 @@ class Patch(AbstractRequest):
         :return: the ID of the newly created Sensor
         """
         params = Patch.cast_params(name=name, description=description, encodingType=encoding_type, metadata=metadata, properties=properties)
-        Patch.entity(Entity.Sensor, entity_id, **params)
+        return Patch.entity(Entity.Sensor, entity_id, **params)
 
     @staticmethod
     def thing(entity_id, name=None, description=None, properties=None, location_id=None, datastream_id=None):
@@ -144,7 +124,7 @@ class Patch(AbstractRequest):
         :return: the ID of the newly created Thing
         """
         params= Patch.cast_params(name=name, description=description, properties=properties, location_id=location_id, datastream_id=datastream_id)
-        Patch.entity(Entity.Thing, entity_id, **params)
+        return Patch.entity(Entity.Thing, entity_id, **params)
 
     @staticmethod
     def entity(entity, entity_id, **params):
@@ -159,4 +139,4 @@ class Patch(AbstractRequest):
         ent.set_param(**params)
         payload = ent.get_data()
         path = Query(entity).entity_id(entity_id).get_query()
-        Patch.send_request(Request.PATCH, path, payload)
+        return Patch.send_request(Request.PATCH, path, payload)

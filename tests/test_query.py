@@ -64,6 +64,46 @@ class TestQueryMethods(unittest.TestCase):
         self.assertEqual(self.query_alt.sub_entity(Entity.Observation).entity_id(10).get_query(),
                          self.API_URL + "Datastreams(10)/Observations")
 
+class TestExpandMethods(unittest.TestCase):
+
+    def setUp(self) -> None:
+        self.expand = Expand(Entity.Observation)
+
+        self.API_URL = config.get("API_URL")
+
+    def test_entities(self):
+        self.assertEqual(self.expand.get_expand(), "Observations")
+
+        with self.assertRaises(Exception):
+            Expand("Foo").get_expand()
+
+    def test_select(self):
+        self.assertEqual(self.expand.select("@iot.id").get_expand(), "Observations($select=@iot.id)")
+        with self.assertRaises(Exception):
+            Expand(Entity.Observation).select("@iot.id", "result").get_expand()
+
+    def test_limit(self):
+        self.assertEqual(self.expand.limit().get_expand(), "Observations($top=10)")
+        self.assertEqual(Expand(Entity.Observation).limit(100).get_expand(), "Observations($top=100)")
+
+    def test_order(self):
+        self.assertEqual(self.expand.order("@iot.id").get_expand(), "Observations($orderBy=@iot.id%20asc)")
+        with self.assertRaises(Exception):
+            self.expand.order().get_expand()
+
+    def test_filter(self):
+        self.assertEqual(self.expand.filter("@iot.id gt 100").get_expand(), "Observations($filter=@iot.id%20gt%20100)")
+        with self.assertRaises(Exception):
+            Expand(Entity.Observation).filter().get_expand()
+
+    def test_expand(self):
+        expand = Expand(Entity.Datastream).get_expand()
+        self.assertEqual(self.expand.get_expand(), "Observations")
+
+        self.assertEqual(self.expand.expand(expand).get_expand(), "Observations($expand=Datastreams)")
+        with self.assertRaises(Exception):
+            Expand(Entity.Observation).expand().get_expand()
+
 
 if __name__ == '__main__':
     unittest.main()

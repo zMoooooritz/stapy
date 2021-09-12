@@ -50,13 +50,17 @@ class AbstractRequest(metaclass=abc.ABCMeta):
             elif request == Request.PATCH:
                 resp = requests.patch(path, json=payload)
         except Exception:
-            raise Exception("the supplied API_URL \"" + config.get("API_URL") + "\" is not valid")
+            raise ValueError("The supplied API_URL \"" + config.get("API_URL") + "\" is not valid")
         if not resp.ok:
             if "message" in resp.json():
                 print("Request was not successful (" + resp.json().get("message") + ")")
+                return -1
             else:
                 print("An error ocurred, request failed")
+                return -1
         elif request == Request.POST:
             loc = resp.headers["location"]
-            entity_id = int(loc[loc.find("(")+1:loc.find(")")])
-            return entity_id
+            return int(loc[loc.find("(")+1:loc.find(")")])
+        elif request == Request.PATCH:
+            return int(path[path.find("(")+1:path.find(")")])
+        return 0

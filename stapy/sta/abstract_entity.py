@@ -26,7 +26,7 @@ class AbstractEntity(metaclass=abc.ABCMeta):
     def set_param(self, **data):
         self.json = self._update_json(self.entry_map, self.json, **data)
 
-    def _update_json(self, template, result, **data):
+    def _update_json(self, template, res_json, **data):
         for k, (val_req, val_type) in template.items():
 
             ent = Entity.match(k, threshold=0.5) # 0.8 too big?!
@@ -38,22 +38,22 @@ class AbstractEntity(metaclass=abc.ABCMeta):
                 # singular
                 if k != ent.value:
                     if isinstance(val_is, dict):
-                        result.update({k: val_is})
+                        res_json.update({k: val_is})
                     else:
                         if isinstance(val_is, list):
-                            val_is = val_is[0]
-                        result.update({k: {"@iot.id": val_is}})
+                            val_is = int(val_is[0])
+                        res_json.update({k: {"@iot.id": val_is}})
                 # plural
                 else:
                     if isinstance(val_is, dict):
-                        result.update({k: val_is})
+                        res_json.update({k: val_is})
                     else:
                         if not isinstance(val_is, list):
                             val_is = [val_is]
                         ids = []
                         for value in val_is:
-                            ids.append({"@iot.id": value})
-                        result.update({k: ids})
+                            ids.append({"@iot.id": int(value)})
+                        res_json.update({k: ids})
                 continue
 
             if k not in data.keys():
@@ -66,32 +66,28 @@ class AbstractEntity(metaclass=abc.ABCMeta):
                 if not isinstance(val_is, val_type):
                     try:
                         val_is = cast(val_type, val_is)
-                    except Exception:
-                        print("The provided value (" + str(val_is) + ") is not of type "
-                            + str(val_type) + " ignoring value")
-                        continue
+                    except TypeError:
+                        raise ValueError("The provided value (" + str(val_is) + ") can not be casted to "
+                            + str(val_type))
 
                 if not self.check_entry(k, val_is):
-                    print("The provided value (" + str(val_is)
-                        + ") does not satisfy the requirements ignoring value")
-                    continue
-                result.update({k: un_cast(val_is)})
+                    raise ValueError("The provided value (" + str(val_is)
+                        + ") does not satisfy the requirements")
+                res_json.update({k: un_cast(val_is)})
             # recursion
             else:
                 if not isinstance(val_is, dict):
-                    print("The data for (" + k + ") needs to be a dict ignoring data")
-                    continue
+                    raise ValueError("The data for (" + k + ") needs to be a dict")
 
                 if not self.check_entry(k, val_is):
-                    print("The provided value (" + str(val_is)
-                        + ") does not satisfy the requirements ignoring value")
-                    continue
+                    raise ValueError("The provided value (" + str(val_is)
+                        + ") does not satisfy the requirements")
 
-                if k in result.values():
-                    result.update({k: self._update_json(val_type, result.get(k), **data.get(k))})
+                if k in res_json.values():
+                    res_json.update({k: self._update_json(val_type, res_json.get(k), **data.get(k))})
                 else:
-                    result.update({k: self._update_json(val_type, {}, **data.get(k))})
-        return result
+                    res_json.update({k: self._update_json(val_type, {}, **data.get(k))})
+        return res_json
 
     @abc.abstractmethod
     def check_entry(self, key, value):

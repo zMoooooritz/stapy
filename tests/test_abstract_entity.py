@@ -68,11 +68,11 @@ class TestAbstractEntityMethods(unittest.TestCase):
 
     def test_observedproperty(self):
         obprop = ent.ObservedProperty(Request.PATCH)
-        obprop.set_param(name=123)
+        obprop.set_param(name="123")
         self.assertEqual(obprop.get_data()["name"], "123")
         self.assertEqual(len(obprop.get_data()), 1)
-        obprop.set_param(properties="test")
-        self.assertEqual(len(obprop.get_data()), 1)
+        obprop.set_param(properties={"test": "test"})
+        self.assertEqual(len(obprop.get_data()), 2)
 
     def test_sensor(self):
         sensor = ent.Sensor(Request.POST)
