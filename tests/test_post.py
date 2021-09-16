@@ -64,6 +64,7 @@ class TestPostMethods(unittest.TestCase):
     @mock.patch("requests.post", side_effect=mocked_one_request)
     def test_observations(self, mock_post):
         Post.observations([], [], 1)
+        #TODO
 
     @mock.patch("requests.post", side_effect=mocked_requests_post)
     def test_observed_property(self, mock_post):

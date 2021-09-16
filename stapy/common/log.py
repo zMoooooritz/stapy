@@ -12,13 +12,6 @@ class Log(Enum):
     DEBUG = 10
     NOTSET = 0
 
-    def __str(self):
-        """
-        Convert an enum key to its value
-        :return: the value of the key
-        """
-        return self.value
-
     @staticmethod
     def from_string(log):
         """
@@ -29,7 +22,7 @@ class Log(Enum):
         try:
             return Log[log]
         except KeyError:
-            return Log.NOTSET.value
+            return Log.NOTSET
 
 
 def custom_logger(name, level):

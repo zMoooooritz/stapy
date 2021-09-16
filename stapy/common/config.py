@@ -4,17 +4,20 @@ import configparser
 
 logger = logging.getLogger('root')
 
+FILENAME = "config.ini"
+
 class Config:
 
-    FILENAME = "config.ini"
-
-    def __init__(self):
+    def __init__(self, filename=None):
+        self.filename = filename
+        if filename is None:
+            self.filename = FILENAME
         self.config = configparser.ConfigParser()
         self.read()
 
     def read(self):
         try:
-            self.config.read(self.FILENAME)
+            self.config.read(self.filename)
         except Exception:
             logger.error("Config file does not exist creating empty config file")
             self.set(API_URL = "")
@@ -22,7 +25,7 @@ class Config:
 
     def save(self):
         try:
-            with open(self.FILENAME, 'w') as configfile:
+            with open(self.filename, 'w') as configfile:
                 self.config.write(configfile)
         except configparser.Error:
             logger.critical("Writing the config file did fail")
