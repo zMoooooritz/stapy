@@ -29,7 +29,7 @@ class AbstractEntity(metaclass=abc.ABCMeta):
     def _update_json(self, template, res_json, **data):
         for k, (val_req, val_type) in template.items():
 
-            ent = Entity.match(k, threshold=0.5) # 0.8 too big?!
+            ent = Entity.match(k, threshold=0.8)
             if ent is not None and k[0].isupper():
                 val_is = data.get(ent.value)
                 if val_is is None:
