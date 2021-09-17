@@ -40,7 +40,7 @@ class GeoJSON(Enum):
         return switch.get(obj, False)
 
     @classmethod
-    def match(cls, obj):
+    def match(cls, obj, threshold=0.5):
         """
         This method takes a string obj and tries to find the GeoJSON object,
         whose value matches the provided string
@@ -48,4 +48,4 @@ class GeoJSON(Enum):
         :return: the object or None
         """
         max_obj = max(GeoJSON, key=lambda x: lev.ratio(obj.lower(), x.value.lower()))
-        return max_obj if lev.ratio(obj.lower(), max_obj.value.lower()) > 0.5 else None
+        return max_obj if lev.ratio(obj.lower(), max_obj.value.lower()) > threshold else None

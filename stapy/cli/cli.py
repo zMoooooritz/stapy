@@ -29,11 +29,10 @@ def construct_input_question(type="input", name="value", message=""):
         }
     ]
 
-
 entity_question = construct_choice_question(message="Which entity to operate on?",
         choices=list(map(Entity.remap, Entity)))
 
-def request():
+def main():
     while(True):
         select_request()
 
