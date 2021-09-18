@@ -28,7 +28,7 @@ class TestParserMethods(unittest.TestCase):
         self.parser.parse_args(args)
         self.assertEqual(config.get("api_url"), "value/")
 
-    @mock.patch('stapy.sta.post.Post.entity')
+    @mock.patch("stapy.sta.post.Post.entity")
     def test_add(self, mocked_post):
         args = Args(add=["help"])
         self.assertEqual(self.parser.parse_args(args), 1)
@@ -45,7 +45,19 @@ class TestParserMethods(unittest.TestCase):
         self.assertEqual(params[0], Entity.ObservedProperty)
         self.assertEqual(kparams, data)
 
-    @mock.patch('stapy.sta.patch.Patch.entity')
+        args = Args(add=["ObservedProperty"] + [*data.values()] + ["properties=7"])
+        ret = self.parser.parse_args(args)
+        params, kparams = mocked_post.call_args
+        self.assertEqual(kparams.get("properties"), "7")
+        self.assertNotIn("test", kparams.keys())
+
+        args = Args(add=["ObservedProperty"] + [*data.values()] + ["properties7"])
+        ret = self.parser.parse_args(args)
+        params, kparams = mocked_post.call_args
+        self.assertNotIn("properties", kparams.keys())
+
+
+    @mock.patch("stapy.sta.patch.Patch.entity")
     def test_patch(self, mocked_patch):
         args = Args(patch=["help"])
         self.assertEqual(self.parser.parse_args(args), 1)
@@ -57,7 +69,7 @@ class TestParserMethods(unittest.TestCase):
         self.assertEqual(self.parser.parse_args(args), 2)
 
         data = {"name": "Testing", "description": "in", "definition": "Production"}
-        args = Args(patch=["ObservedProperty", 7, "name=Testing", "properties={\"test\": 15}"])
+        args = Args(patch=["ObservedProperty", 7, "name=Testing", "properties={\"test\": 15}", "nonvalidoption"])
         ret = self.parser.parse_args(args)
         params, kparams = mocked_patch.call_args
         self.assertEqual(ret, 0)
@@ -65,8 +77,8 @@ class TestParserMethods(unittest.TestCase):
         self.assertEqual(params[1], 7)
         self.assertEqual(kparams, {"name": "Testing", "properties": "{\"test\": 15}"})
 
-    @mock.patch('stapy.sta.delete.Delete.query')
-    @mock.patch('stapy.sta.delete.Delete.entity')
+    @mock.patch("stapy.sta.delete.Delete.query")
+    @mock.patch("stapy.sta.delete.Delete.entity")
     def test_delete(self, mocked_delete_e, mocked_delete_q):
         args = Args(delete=["help"])
         self.assertEqual(self.parser.parse_args(args), 1)

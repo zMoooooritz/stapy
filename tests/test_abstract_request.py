@@ -7,9 +7,6 @@ import stapy.sta.entities as ent
 
 class TestAbstractRequestMethods(unittest.TestCase):
 
-    def setUp(self):
-        pass
-
     def test_get_entity(self):
         self.assertEqual(Post.get_entity(Entity.Datastream), ent.Datastream)
 
