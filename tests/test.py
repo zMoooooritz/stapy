@@ -2,7 +2,7 @@ import unittest
 
 class TestSTAMethods(unittest.TestCase):
 
-    def setUp(self) -> None:
+    def setUp(self):
         pass
 
     def test(self):

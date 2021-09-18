@@ -25,8 +25,8 @@ class TestConfigMethods(unittest.TestCase):
         config.save()
 
     def test_set(self):
-        config.set(test="testing")
-        config.set(var={"test": "test"})
+        self.config.set(test="testing")
+        self.config.set(var={"test": "test"})
 
     def test_get(self):
         self.config.set(test="testing")

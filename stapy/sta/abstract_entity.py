@@ -77,16 +77,19 @@ class AbstractEntity(metaclass=abc.ABCMeta):
             # recursion
             else:
                 if not isinstance(val_is, dict):
-                    raise ValueError("The data for (" + k + ") needs to be a dict")
+                    try:
+                        val_is = cast(dict, val_is)
+                    except TypeError:
+                        raise ValueError("The provided value (" + str(val_is) + ") can not be casted as dict")
 
                 if not self.check_entry(k, val_is):
                     raise ValueError("The provided value (" + str(val_is)
                         + ") does not satisfy the requirements")
 
                 if k in res_json.values():
-                    res_json.update({k: self._update_json(val_type, res_json.get(k), **data.get(k))})
+                    res_json.update({k: self._update_json(val_type, res_json.get(k), **val_is)})
                 else:
-                    res_json.update({k: self._update_json(val_type, {}, **data.get(k))})
+                    res_json.update({k: self._update_json(val_type, {}, **val_is)})
         return res_json
 
     @abc.abstractmethod
