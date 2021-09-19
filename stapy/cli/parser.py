@@ -174,3 +174,4 @@ class Parser(object):
 
         if self.args.inter:
             main()
+            return 0

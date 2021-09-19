@@ -3,22 +3,34 @@ from unittest import mock
 
 from stapy.cli.parser import Parser
 from stapy.sta.entity import Entity
+from stapy.common.log import Log
 from stapy.common.config import config
 
 class Args(object):
 
-    def __init__(self, add=None, patch=None, delete=None, getr=None, url=None):
+    def __init__(self, add=None, patch=None, delete=None, getr=None, url=None, log=None, inter=None):
         self.add = add
         self.patch = patch
         self.delete = delete
         self.getr = getr
         self.url = url
-        self.inter = None
+        self.log = log
+        self.inter = inter
 
 class TestParserMethods(unittest.TestCase):
 
     def setUp(self):
         self.parser = Parser(construct=False)
+
+    @mock.patch("argparse.ArgumentParser.parse_args")
+    def test_construct_parser(self, mocked_args):
+        mocked_args.return_value = Args(add=["help"])
+        self.assertEqual(Parser().parse_args(), 1)
+
+    @mock.patch("argparse.ArgumentParser.parse_args")
+    def test_log_level(self, mocked_args):
+        mocked_args.return_value = Args(log=Log.WARNING)
+        self.assertEqual(Parser().get_log_level(), Log.WARNING.value)
 
     def test_url(self):
         config.set(api_url="")
