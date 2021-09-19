@@ -1,9 +1,9 @@
+import json
+import urllib.request
+
 from stapy.sta.entity import Entity
 from stapy.common.config import config
 from stapy.common.retry import retry
-
-import json
-import urllib.request
 
 class Query(object):
     """
@@ -15,6 +15,7 @@ class Query(object):
     _entity_id = None
     _sub_entity = None
     _expands = None
+    _data_sets = None
 
     def __init__(self, entity):
         """
@@ -122,7 +123,7 @@ class Query(object):
         :return: self to allow command-chaining
         """
         if entity not in Entity:
-            raise Exception("Invalid entity: " + entity.value)
+            raise Exception("Invalid entity: " + str(entity))
         self._sub_entity = entity.value
         return self
 
@@ -150,7 +151,7 @@ class Query(object):
         """
         return urllib.request.urlopen(path)
 
-    def get_data_sets(self):
+    def get_data_sets(self, count=0):
         """
         This method extracts all data defined by the different given selectors from the data specified by the path
         Each defined selector results in one list in the tuple of lists
@@ -158,9 +159,9 @@ class Query(object):
         """
         if len(self._selectors) == 0:
             return []
-        data_sets = [[] for _ in range(len(self._selectors))]
+        self._data_sets = [[] for _ in range(len(self._selectors))]
         path = self.get_query()
-        count = 0
+        cnt = 0
         finished = False
         is_list = True
         while True:
@@ -174,40 +175,39 @@ class Query(object):
 
             if is_list:
                 for value in payload:
-                    for idx, selector in enumerate(self._selectors):
-                        val = value
-                        for sel in selector:
-                            try:
-                                val = val[sel]
-                            except KeyError:
-                                val = ""
-                                break
-                        data_sets[idx].append(val)
-                    count += 1
-                    # if count == self._count:
-                    #     finished = True
-                    #     break
+                    self.extract_data(value)
+                    cnt += 1
+                    if cnt == count:
+                        finished = True
+                        break
 
                 if finished or "@iot.nextLink" not in data:
                     break
                 else:
                     path = data["@iot.nextLink"]
             else:
-                for idx, selector in enumerate(self._selectors):
-                    val = payload
-                    for sel in selector:
-                        try:
-                            val = val[sel]
-                        except KeyError:
-                            val = ""
-                            break
-                    data_sets[idx].append(val)
+                self.extract_data(payload)
                 break
 
-        if len(self._selectors) == 1:
-            return data_sets[0]
-        else:
-            return tuple(data_sets)
+        # TODO this conversion could be non intuitive and therefore result in confusion
+        #       as it changes from lists to elements if the lists only contain one element
+        if cnt <= 1:
+            self._data_sets = [data[0] for data in self._data_sets]
+        return self._data_sets[0] if len(self._selectors) == 1 else tuple(self._data_sets)
+
+    def extract_data(self, data):
+        """
+        This method extracts all data defined by the different selectors from the supplied data
+        """
+        for idx, selector in enumerate(self._selectors):
+            val = data
+            for sel in selector:
+                try:
+                    val = val[sel]
+                except (KeyError, TypeError):
+                    val = ""
+                    break
+            self._data_sets[idx].append(val)
     
     def _build_entity(self):
         """
@@ -244,7 +244,7 @@ class Expand(object):
         :param entity: entity that contains the relevant information
         """
         if entity not in Entity:
-            raise Exception("Invalid entity: " + entity.value)
+            raise Exception("Invalid entity: " + str(entity))
         self._entity = Entity.remap(entity)
         self._options = []
 
