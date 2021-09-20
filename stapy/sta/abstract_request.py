@@ -49,6 +49,8 @@ class AbstractRequest(metaclass=abc.ABCMeta):
                 resp = requests.post(path, json=payload)
             elif request == Request.PATCH:
                 resp = requests.patch(path, json=payload)
+            else:
+                raise Exception("Invalid request type")
         except Exception:
             raise ValueError("The supplied API_URL \"" + config.get("API_URL") + "\" is not valid")
         if not resp.ok:
@@ -63,4 +65,3 @@ class AbstractRequest(metaclass=abc.ABCMeta):
             return int(loc[loc.find("(")+1:loc.find(")")])
         elif request == Request.PATCH:
             return int(path[path.find("(")+1:path.find(")")])
-        return 0

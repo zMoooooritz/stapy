@@ -40,6 +40,9 @@ class TestAbstractEntityMethods(unittest.TestCase):
         self.assertEqual(data["properties"]["key"], "value")
         self.assertEqual(data["Thing"]["@iot.id"], 123)
         self.assertEqual(data["Observations"], [{"@iot.id": 123},{"@iot.id": 456}])
+        datastream = ent.Datastream(Request.PATCH)
+        with self.assertRaises(ValueError):
+            datastream.set_param(properties=15)
 
     def test_featureofinterest(self):
         foi = ent.FeatureOfInterest(Request.POST)
@@ -56,6 +59,9 @@ class TestAbstractEntityMethods(unittest.TestCase):
         location = ent.Location(Request.PATCH)
         location.set_param(locaton={"type": "xyz", "coordinates": [1, 2, 3]})
         self.assertIsNone(location.get_data().get("location"))
+        location = ent.Location(Request.PATCH)
+        with self.assertRaises(ValueError):
+            location.set_param(location=42)
 
     def test_observation(self):
         observation = ent.Observation(Request.POST)
