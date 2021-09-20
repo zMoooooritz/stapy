@@ -3,6 +3,7 @@ from unittest import mock
 
 from stapy.sta.post import Post
 from stapy.sta.entity import Entity
+from stapy.common.config import config
 
 def mocked_requests_post(*args, **kwargs):
     class MockResponse:
@@ -24,63 +25,77 @@ def mocked_requests_post(*args, **kwargs):
         return MockResponse(kwargs, 200)
     return MockResponse({}, 404)
 
-def mocked_one_request(*args, **kwargs):
-    return 1
-
 class TestPostMethods(unittest.TestCase):
 
+    def setUp(self):
+        self.API_URL = config.get("API_URL")
+
     @mock.patch("requests.post", side_effect=mocked_requests_post)
-    def test_datastream(self, mock_post):
+    def test_datastream(self, mocked_post):
         self.assertEqual(Post.datastream("Test", "Test", {}, "Test", 1, 1, 1), 1)
         self.assertEqual(Post.datastream("invalid", "Test", {}, "Test", 1, 1, 1), -1)
         with self.assertRaises(Exception):
             Post.datastream("Test", "Test", "Test", "Test", 1, 1, 1)
 
     @mock.patch("requests.post", side_effect=mocked_requests_post)
-    def test_full_datastream(self, mock_post):
+    def test_full_datastream(self, mocked_post):
         self.assertEqual(Post.full_datastream("Test", "Test", "Test", "Test", {"type": "Point", "coordinates": [1, 2, 3]}, "Test", {}, "Test"), 1)
         with self.assertRaises(Exception):
             self.assertEqual(Post.full_datastream("Test", "Test", "Test", "Test", {"type": "Point", "coordinates": [1, 2, 3]}, "Test", "Test", "Test"), 1)
     
     @mock.patch("requests.post", side_effect=mocked_requests_post)
-    def test_featureofinterest(self, mock_post):
+    def test_featureofinterest(self, mocked_post):
         self.assertEqual(Post.feature_of_interest("Test", "Test", "Test", {}), 1)
         with self.assertRaises(Exception):
             Post.feature_of_interest("Test", "Test")
 
     @mock.patch("requests.post", side_effect=mocked_requests_post)
-    def test_location(self, mock_post):
+    def test_location(self, mocked_post):
         self.assertEqual(Post.location("Test", "Test", "Test", {"type": "Point", "coordinates": [1, 2, 3]}), 1)
         with self.assertRaises(Exception):
             Post.location("Test", "Test", "Test", {"type": "xyz", "coordinates": [1, 2, 3]})
 
     @mock.patch("requests.post", side_effect=mocked_requests_post)
-    def test_observation(self, mock_post):
+    def test_observation(self, mocked_post):
         self.assertEqual(Post.observation("Test", "Test"), 1)
         self.assertEqual(Post.observation("Test", None), 1)
         with self.assertRaises(Exception):
             Post.observation("Test", "Test", result="Tester")
 
-    @mock.patch("requests.post", side_effect=mocked_one_request)
-    def test_observations(self, mock_post):
+    @mock.patch("requests.post")
+    def test_observations(self, mocked_post):
         Post.observations([], [], 1)
-        #TODO
+        params, kparams = mocked_post.call_args
+        self.assertEqual(params[0], self.API_URL + "CreateObservations")
+        self.assertEqual(kparams, {"json": [{"Datastream": {"@iot.id": 1}, "components": ["phenomenonTime", "result"], "dataArray": []}]})
+        Post.observations([1, 2, 5], [5, 2, 1], 1)
+        params, kparams = mocked_post.call_args
+        self.assertEqual(params[0], self.API_URL + "CreateObservations")
+        self.assertEqual(kparams, {"json": [{"Datastream": {"@iot.id": 1}, "components": ["phenomenonTime", "result"], "dataArray": [[5, 1], [2, 2], [1, 5]]}]})
+        Post.observations([1, 2, 5], [5, 2, 1], 1, ["key1", "key2"], [["value1", "value2", "value3"], [5, 2, 1]])
+        params, kparams = mocked_post.call_args
+        self.assertEqual(params[0], self.API_URL + "CreateObservations")
+        print(kparams)
+        self.assertEqual(kparams, {"json": [{"Datastream": {"@iot.id": 1}, "components": ["phenomenonTime", "result", "parameters", "parameters"],
+            "dataArray": [[5, 1, {"key1": "value1"}, {"key2": 5}], [2, 2, {"key1": "value2"}, {"key2": 2}], [1, 5, {"key1": "value3"}, {"key2": 1}]]}]})
+        with self.assertRaises(Exception):
+            Post.observations([], [], 1, ["key1"], [1, 5])
 
     @mock.patch("requests.post", side_effect=mocked_requests_post)
-    def test_observed_property(self, mock_post):
+    def test_observed_property(self, mocked_post):
         self.assertEqual(Post.observed_property("Test", "Test", "Test"), 1)
         self.assertEqual(Post.observed_property("invalid", "Test", "Test"), -1)
         with self.assertRaises(Exception):
             Post.observed_property("invalid", "Test", "Test", "Test")
 
     @mock.patch("requests.post", side_effect=mocked_requests_post)
-    def test_sensor(self, mock_post):
+    def test_sensor(self, mocked_post):
         self.assertEqual(Post.sensor("Test", "Test", "Test"), 1)
         with self.assertRaises(Exception):
             Post.sensor("Test")
 
     @mock.patch("requests.post", side_effect=mocked_requests_post)
-    def test_thing(self, mock_post):
+    def test_thing(self, mocked_post):
         self.assertEqual(Post.thing("Test", "Test"), 1)
         self.assertEqual(Post.thing("invalid", "Test"), -1)
         with self.assertRaises(Exception):

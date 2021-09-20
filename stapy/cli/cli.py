@@ -1,12 +1,12 @@
+from PyInquirer import prompt
+import logging
+
 from stapy.sta.entity import Entity
 from stapy.sta.post import Post
 from stapy.sta.delete import Delete
 from stapy.sta.request import Request
 from stapy.sta.patch import Patch
 from stapy.sta.abstract_request import AbstractRequest
-
-from PyInquirer import prompt
-import logging
 
 logger = logging.getLogger('root')
 

@@ -3,22 +3,34 @@ from unittest import mock
 
 from stapy.cli.parser import Parser
 from stapy.sta.entity import Entity
+from stapy.common.log import Log
 from stapy.common.config import config
 
 class Args(object):
 
-    def __init__(self, add=None, patch=None, delete=None, getr=None, url=None):
+    def __init__(self, add=None, patch=None, delete=None, getr=None, url=None, log=None, inter=None):
         self.add = add
         self.patch = patch
         self.delete = delete
         self.getr = getr
         self.url = url
-        self.inter = None
+        self.log = log
+        self.inter = inter
 
 class TestParserMethods(unittest.TestCase):
 
     def setUp(self):
         self.parser = Parser(construct=False)
+
+    @mock.patch("argparse.ArgumentParser.parse_args")
+    def test_construct_parser(self, mocked_args):
+        mocked_args.return_value = Args(add=["help"])
+        self.assertEqual(Parser().parse_args(), 1)
+
+    @mock.patch("argparse.ArgumentParser.parse_args")
+    def test_log_level(self, mocked_args):
+        mocked_args.return_value = Args(log=Log.WARNING)
+        self.assertEqual(Parser().get_log_level(), Log.WARNING.value)
 
     def test_url(self):
         config.set(api_url="")
@@ -28,7 +40,7 @@ class TestParserMethods(unittest.TestCase):
         self.parser.parse_args(args)
         self.assertEqual(config.get("api_url"), "value/")
 
-    @mock.patch('stapy.sta.post.Post.entity')
+    @mock.patch("stapy.sta.post.Post.entity")
     def test_add(self, mocked_post):
         args = Args(add=["help"])
         self.assertEqual(self.parser.parse_args(args), 1)
@@ -45,7 +57,19 @@ class TestParserMethods(unittest.TestCase):
         self.assertEqual(params[0], Entity.ObservedProperty)
         self.assertEqual(kparams, data)
 
-    @mock.patch('stapy.sta.patch.Patch.entity')
+        args = Args(add=["ObservedProperty"] + [*data.values()] + ["properties=7"])
+        ret = self.parser.parse_args(args)
+        params, kparams = mocked_post.call_args
+        self.assertEqual(kparams.get("properties"), "7")
+        self.assertNotIn("test", kparams.keys())
+
+        args = Args(add=["ObservedProperty"] + [*data.values()] + ["properties7"])
+        ret = self.parser.parse_args(args)
+        params, kparams = mocked_post.call_args
+        self.assertNotIn("properties", kparams.keys())
+
+
+    @mock.patch("stapy.sta.patch.Patch.entity")
     def test_patch(self, mocked_patch):
         args = Args(patch=["help"])
         self.assertEqual(self.parser.parse_args(args), 1)
@@ -57,7 +81,7 @@ class TestParserMethods(unittest.TestCase):
         self.assertEqual(self.parser.parse_args(args), 2)
 
         data = {"name": "Testing", "description": "in", "definition": "Production"}
-        args = Args(patch=["ObservedProperty", 7, "name=Testing", "properties={\"test\": 15}"])
+        args = Args(patch=["ObservedProperty", 7, "name=Testing", "properties={\"test\": 15}", "nonvalidoption"])
         ret = self.parser.parse_args(args)
         params, kparams = mocked_patch.call_args
         self.assertEqual(ret, 0)
@@ -65,8 +89,8 @@ class TestParserMethods(unittest.TestCase):
         self.assertEqual(params[1], 7)
         self.assertEqual(kparams, {"name": "Testing", "properties": "{\"test\": 15}"})
 
-    @mock.patch('stapy.sta.delete.Delete.query')
-    @mock.patch('stapy.sta.delete.Delete.entity')
+    @mock.patch("stapy.sta.delete.Delete.query")
+    @mock.patch("stapy.sta.delete.Delete.entity")
     def test_delete(self, mocked_delete_e, mocked_delete_q):
         args = Args(delete=["help"])
         self.assertEqual(self.parser.parse_args(args), 1)

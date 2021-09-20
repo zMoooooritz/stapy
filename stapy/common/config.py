@@ -16,21 +16,11 @@ class Config:
         self.read()
 
     def read(self):
-        try:
-            self.config.read(self.filename)
-        except Exception:
-            logger.error("Config file does not exist creating empty config file")
-            self.set(API_URL = "")
-            self.save()
+        self.config.read(self.filename)
 
     def save(self):
-        try:
-            with open(self.filename, 'w') as configfile:
-                self.config.write(configfile)
-        except configparser.Error:
-            logger.critical("Writing the config file did fail")
-            logger.info("ending application")
-            sys.exit()
+        with open(self.filename, 'w') as configfile:
+            self.config.write(configfile)
 
     def get(self, arg):
         try:

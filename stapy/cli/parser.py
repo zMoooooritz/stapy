@@ -10,7 +10,6 @@ from stapy.common.config import config, set_api_url
 from stapy.cli.cli import main
 from stapy.version import __version__
 
-
 logger = logging.getLogger('root')
 
 class Parser(object):
@@ -33,14 +32,14 @@ class Parser(object):
                             help="set the url of the SensorThings API backend")
         parser.add_argument("-a", "--add", nargs="+", metavar=("Entity", "Parameters"),
                             help="add new entities")
-        parser.add_argument("-p", "--patch", nargs="+", metavar=("Entity", "ID"),
+        parser.add_argument("-p", "--patch", nargs="+", metavar=("Entity", "ID, Parameters"),
                             help="patch existing entities")
         parser.add_argument("-d", "--del", nargs="+", dest="delete", metavar=("Entity", "ID"),
                             help="delete entities by id or path")
         parser.add_argument("-g", "--get", nargs="+", dest="getr", metavar=("Entity", "ID/Path"),
                             help="get the content of entities by id or path")
         parser.add_argument("-i", "--inter", action="store_true",
-                            help="start the interactive CLI mode for requests")
+                            help="start the interactive CLI mode")
         parser.add_argument("-v", "--version", action="version",
                             version="%(prog)s {version}".format(version=__version__))
 
@@ -174,3 +173,4 @@ class Parser(object):
 
         if self.args.inter:
             main()
+            return 0
