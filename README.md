@@ -2,7 +2,7 @@
 [![Latest Release](https://img.shields.io/github/release/zMoooooritz/stapy.svg)](https://github.com/zMoooooritz/stapy/releases)
 [![Build Status](https://github.com/zMoooooritz/stapy/workflows/build/badge.svg)](https://github.com/zMoooooritz/stapy/actions)
 [![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/zMoooooritz/stapy.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/zMoooooritz/stapy/context:python)
-[![Codecov](https://img.shields.io/codecov/c/github/zMoooooritz/stapy.svg)](https://codecov.io/github/zMoooooritz/stapy?branch=master)
+[![Codecov](https://codecov.io/gh/zMoooooritz/stapy/branch/master/graph/badge.svg?token=04D52OK2H4)](https://codecov.io/github/zMoooooritz/stapy?branch=master)
 
 This is an easy to use SensorThings API Client written in Python
 
