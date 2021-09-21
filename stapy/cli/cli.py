@@ -38,38 +38,37 @@ def main():
 
         question = construct_input_question("confirm", message="Do you want to continue?")
         cont = cprompt(question)
-        if not cont["value"]:
+        if not cont:
             break
 
 def select_request():
     question = construct_choice_question(message="What do you want to do?", choices=Request.list())
     operation = cprompt(question)
-    print(operation)
 
-    if operation["value"] == Request.POST.value:
+    if operation == Request.POST.value:
         entity = cprompt(entity_question)
-        post_request(Entity.match(entity["value"]))
-    elif operation["value"] == Request.DELETE.value:
+        post_request(Entity.match(entity))
+    elif operation == Request.DELETE.value:
         delete_request()
-    elif operation["value"] == Request.PATCH.value:
+    elif operation == Request.PATCH.value:
         entity = cprompt(entity_question)
-        patch_request(Entity.match(entity["value"]))
-    elif operation["value"] == Request.GET.value:
+        patch_request(Entity.match(entity))
+    elif operation == Request.GET.value:
         get_request()
 
 def delete_request():
     question = construct_choice_question(message="Delete by IDs or path?", choices=["IDs", "Path"])
     mode = cprompt(question)
-    if mode["value"] == "IDs":
+    if mode == "IDs":
         entity = cprompt(entity_question)
         question = construct_input_question(message="List of IDs to delete:")
         result = cprompt(question)
-        ids = list(filter(lambda x: x.isdigit(), result["value"].split()))
-        Delete.entity(Entity.match(entity["value"]), ids)
+        ids = list(filter(lambda x: x.isdigit(), result.split()))
+        Delete.entity(Entity.match(entity), ids)
     else:
         question = construct_input_question(message="Path for entities to delete:")
         result = cprompt(question)
-        Delete.query(result["value"])
+        Delete.query(result)
 
 def post_request(entity):
     Post.entity(entity, **build_entity(entity))
@@ -77,7 +76,7 @@ def post_request(entity):
 def patch_request(entity):
     question = construct_input_question(type="input",
         message="ID of the " + entity.value + " to operate on:")
-    entity_id = cprompt(question)["value"]
+    entity_id = cprompt(question)
 
     Patch.entity(entity, entity_id, **build_entity(entity))
 
@@ -94,7 +93,7 @@ def build_entity(entity):
     optional = False
     if len(opt_attributes) > 0:
         question = construct_input_question("confirm", message="Do you want to add optional parameters?")
-        optional = cprompt(question)["value"]
+        optional = cprompt(question)
 
     args = {}
     if optional:
@@ -109,22 +108,21 @@ def build_entity(entity):
     for k, v in args.items():
         if v != "":
             final_args.update({k: v})
-    print(final_args)
     return final_args
 
 def question_block(attributes):
     questions = []
     for attribute in attributes:
         questions.append(construct_input_question(name=attribute, message=cap_first(attribute) + ":")[0])
-    return prompt(questions)
+    return cprompt(questions, named=True)
 
 def cap_first(string):
     if not isinstance(string, str) or len(string) <= 1:
         return ""
     return string[0].upper() + string[1:]
 
-def cprompt(question):
+def cprompt(question, named=False):
     answer = prompt(question)
     if answer == {}:
         quit()
-    return answer
+    return answer if named else answer["value"]
