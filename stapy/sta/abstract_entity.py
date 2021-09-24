@@ -7,6 +7,15 @@ from stapy.sta.entity import Entity
 class AbstractEntity(metaclass=abc.ABCMeta):
 
     entry_map = None
+    """
+        The attribute entry_map has to be overwritten by every Entity that inherits this class
+        This dict is build up the following way:
+        For each attribute of an entity in the STA it contains a key named the same way
+        Each key has a triple as value
+        The first value describes whether or not this value is mandatory for the respective entity
+        The second value describes whether or not this value can be set from the outside
+        And the last value defines the type of the value
+    """
     json = None
 
     def __init__(self, request=None):
@@ -15,7 +24,7 @@ class AbstractEntity(metaclass=abc.ABCMeta):
             self.setup_json()
 
     def setup_json(self):
-        for k, (val_req, val_type) in self.entry_map.items():
+        for k, (val_req, _, val_type) in self.entry_map.items():
             if not val_req:
                 continue
             if isinstance(val_type, dict):
@@ -27,7 +36,7 @@ class AbstractEntity(metaclass=abc.ABCMeta):
         self.json = self._update_json(self.entry_map, self.json, **data)
 
     def _update_json(self, template, res_json, **data):
-        for k, (val_req, val_type) in template.items():
+        for k, (val_req, _, val_type) in template.items():
 
             ent = Entity.match(k, threshold=0.8)
             if ent is not None and k[0].isupper():
@@ -97,10 +106,10 @@ class AbstractEntity(metaclass=abc.ABCMeta):
         raise NotImplementedError
     
     def req_attributes(self):
-        return [k for k, v in self.entry_map.items() if v[0]]
+        return [k for k, v in self.entry_map.items() if v[0] and v[1]]
     
     def opt_attributes(self):
-        return [k for k, v in self.entry_map.items() if not v[0]]
+        return [k for k, v in self.entry_map.items() if not v[0] and v[1]]
 
     def get_data(self):
         return self.json

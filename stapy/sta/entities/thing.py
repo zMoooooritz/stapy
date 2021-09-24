@@ -1,20 +1,15 @@
 
 from stapy.sta.abstract_entity import AbstractEntity
 
+# TODO HistoricalLocations
 class Thing(AbstractEntity):
     entry_map = {
-        "name": (True, str),
-        "description": (True, str),
-        "properties": (False, dict),
-        "Locations": (False, {
-            "@iot.id": (True, int)
-        }),
-        "HistoricalLocations": (False, {
-            "@iot.id": (True, int)
-        }),
-        "Datastreams": (False, {
-            "@iot.id": (True, int)
-        })
+        "name": (True, True, str),
+        "description": (True, True, str),
+        "properties": (False, True, dict),
+        "Locations": (False, True, dict),
+        "HistoricalLocations": (False, True, dict),
+        "Datastreams": (False, True, dict)
     }
 
     def check_entry(self, key, value):

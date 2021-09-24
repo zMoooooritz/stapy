@@ -45,7 +45,7 @@ class TestPostMethods(unittest.TestCase):
     
     @mock.patch("requests.post", side_effect=mocked_requests_post)
     def test_featureofinterest(self, mocked_post):
-        self.assertEqual(Post.feature_of_interest("Test", "Test", "Test", {}), 1)
+        self.assertEqual(Post.feature_of_interest("Test", "Test", "Test", {"type": "Point", "coordinates": [1, 2, 3]}), 1)
         with self.assertRaises(Exception):
             Post.feature_of_interest("Test", "Test")
 

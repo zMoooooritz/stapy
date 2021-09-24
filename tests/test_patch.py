@@ -36,7 +36,7 @@ class TestPatchMethods(unittest.TestCase):
 
     @mock.patch("requests.patch", side_effect=mocked_requests_patch)
     def test_featureofinterest(self, mock_patch):
-        self.assertEqual(Patch.feature_of_interest(1, "Test", "Test", "Test", {}), 1)
+        self.assertEqual(Patch.feature_of_interest(1, "Test", "Test", "Test", {"type": "Point", "coordinates": [1, 2, 3]}), 1)
         with self.assertRaises(Exception):
             Patch.feature_of_interest(1, "Test", test="Test")
 
