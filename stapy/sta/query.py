@@ -23,7 +23,7 @@ class Query(object):
         :param entity: entity that contains the relevant information
         """
         if entity not in Entity:
-            raise Exception("Invalid entity: " + str(entity))
+            raise ValueError("Invalid entity: " + str(entity))
         self._sel_entity = entity.value
         self._selectors = []
         self._params = []
@@ -123,7 +123,7 @@ class Query(object):
         :return: self to allow command-chaining
         """
         if entity not in Entity:
-            raise Exception("Invalid entity: " + str(entity))
+            raise ValueError("Invalid entity: " + str(entity))
         self._sub_entity = entity.value
         return self
 
@@ -244,7 +244,7 @@ class Expand(object):
         :param entity: entity that contains the relevant information
         """
         if entity not in Entity:
-            raise Exception("Invalid entity: " + str(entity))
+            raise ValueError("Invalid entity: " + str(entity))
         self._entity = Entity.remap(entity)
         self._options = []
 

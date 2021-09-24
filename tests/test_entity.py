@@ -21,6 +21,7 @@ class TestSTAMethods(unittest.TestCase):
         self.assertEqual(Entity.match("datastream"), Entity.Datastream)
         self.assertEqual(Entity.match("sens"), Entity.Sensor)
         self.assertEqual(Entity.match("ObservedPropertiess"), Entity.ObservedProperty)
+        self.assertIsNone(Entity.match(123))
         self.assertIsNone(Entity.match("xyz"))
 
 if __name__ == '__main__':
