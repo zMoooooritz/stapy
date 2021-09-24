@@ -1,5 +1,4 @@
 import logging
-import sys
 import configparser
 
 logger = logging.getLogger('root')

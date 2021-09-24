@@ -129,7 +129,6 @@ class Parser(object):
                 print("The following arguments are available: " + ", ".join(req_args + opt_args))
                 return 2
 
-            ent = Patch.get_entity(entity)()
             entity_id = int(self.args.patch[1])
             args = {}
 
