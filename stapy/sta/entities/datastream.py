@@ -1,30 +1,25 @@
 
 from stapy.sta.abstract_entity import AbstractEntity
+from stapy.sta.time import Time
 
-# TODO unitOfMeasurement {name, symbol, definition}
-# TODO what about values that cannot be set (resultTime, observedArea, phenomenonTime)
 class Datastream(AbstractEntity):
     entry_map = {
-        "name": (True, str),
-        "description": (True, str),
-        "unitOfMeasurement": (True, dict),
-        "observationType": (True, str),
-        "observedArea": (False, object),
-        "phenomenonTime": (False, str),
-        "resultTime": (False, str),
-        "properties": (False, dict),
-        "Thing": (True, {
-            "@iot.id": (True, int)
+        "name": (True, True, str),
+        "description": (True, True, str),
+        "unitOfMeasurement": (True, True, {
+            "name": (True, True, str),
+            "symbol": (True, True, str),
+            "definition": (True, True, str)
         }),
-        "ObservedProperty": (True, {
-            "@iot.id": (True, int)
-        }),
-        "Sensor": (True, {
-            "@iot.id": (True, int)
-        }),
-        "Observations": (False, {
-            "@iot.id": (True, int)
-        })
+        "observationType": (True, True, str),
+        "observedArea": (False, False, dict),
+        "phenomenonTime": (False, False, Time),
+        "resultTime": (False, False, Time),
+        "properties": (False, True, dict),
+        "Thing": (True, True, dict),
+        "ObservedProperty": (True, True, dict),
+        "Sensor": (True, True, dict),
+        "Observations": (False, True, dict)
     }
 
     def check_entry(self, key, value):

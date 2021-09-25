@@ -47,5 +47,7 @@ class GeoJSON(Enum):
         :param entity: the string to find the GeoJSON object for
         :return: the object or None
         """
+        if not isinstance(obj, str):
+            return None
         max_obj = max(GeoJSON, key=lambda x: lev.ratio(obj.lower(), x.value.lower()))
         return max_obj if lev.ratio(obj.lower(), max_obj.value.lower()) > threshold else None

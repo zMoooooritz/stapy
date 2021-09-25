@@ -47,10 +47,10 @@ class TestAbstractEntityMethods(unittest.TestCase):
     def test_featureofinterest(self):
         foi = ent.FeatureOfInterest(Request.POST)
         foi.set_param(encodingType="enc_type")
-        foi.set_param(location=self.loc)
+        foi.set_param(feature=self.loc)
         data = foi.get_data()
         self.assertEqual(data["encodingType"], "enc_type")
-        self.assertEqual(data["location"], self.loc)
+        self.assertEqual(data["feature"], self.loc)
 
     def test_location(self):
         location = ent.Location(Request.PATCH)

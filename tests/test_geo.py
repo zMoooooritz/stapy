@@ -4,9 +4,6 @@ import unittest
 
 class TestGeoJSONMethods(unittest.TestCase):
 
-    def setUp(self) -> None:
-        pass
-
     def test_list(self):
         self.assertEqual(len(GeoJSON), len(GeoJSON.list()))
         self.assertIn(GeoJSON.Point.value, GeoJSON.list())
@@ -15,6 +12,7 @@ class TestGeoJSONMethods(unittest.TestCase):
         self.assertEqual(GeoJSON.Point, GeoJSON.match("Pont"))
         self.assertEqual(GeoJSON.MultiPolygon, GeoJSON.match("multypol"))
         self.assertIsNone(GeoJSON.match("xyz"))
+        self.assertIsNone(GeoJSON.match(123))
 
     def test_is_valid(self):
         self.assertFalse(GeoJSON.is_valid("Point", [1, 1]))

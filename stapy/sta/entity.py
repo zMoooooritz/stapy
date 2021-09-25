@@ -31,6 +31,13 @@ class Entity(Enum):
         """
         return [entity.value for entity in Entity]
 
+    @staticmethod
+    def keys():
+        """
+        :return: a list of all entity names
+        """
+        return [entity.name for entity in Entity]
+
     @classmethod
     def remap(cls, entity):
         """
@@ -53,5 +60,7 @@ class Entity(Enum):
         :param entity: the string to find the entity for
         :return: the entity or None
         """
+        if not isinstance(entity, str):
+            return None
         max_ent = max(Entity, key=lambda x: lev.ratio(entity.lower(), x.value.lower()))
         return max_ent if lev.ratio(entity.lower(), max_ent.value.lower()) > threshold else None

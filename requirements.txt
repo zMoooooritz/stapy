@@ -1,4 +1,5 @@
-requests==2.26.0
 geojson==2.5.0
+requests==2.26.0
 PyInquirer==1.0.3
+python_dateutil==2.8.2
 python_Levenshtein==0.12.2

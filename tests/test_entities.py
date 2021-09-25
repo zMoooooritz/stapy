@@ -15,5 +15,12 @@ class TestEntitiesMethods(unittest.TestCase):
         self.assertFalse(loc.check_entry("location", {"type": "Point", "coordinates": []}))
         self.assertFalse(loc.check_entry("location", {"type": GeoJSON.Point, "coordinates": []}))
 
+    def test_featureofinterest(self):
+        foi = ent.featureofinterest.FeatureOfInterest()
+        self.assertTrue(foi.check_entry("feature", {"type": GeoJSON.Point, "coordinates": [1, 2, 3]}))
+        self.assertTrue(foi.check_entry("feature", {"type": "Point", "coordinates": [1, 2, 3]}))
+        self.assertFalse(foi.check_entry("feature", {"type": "Point", "coordinates": []}))
+        self.assertFalse(foi.check_entry("feature", {"type": GeoJSON.Point, "coordinates": []}))
+
 if __name__ == '__main__':
     unittest.main()

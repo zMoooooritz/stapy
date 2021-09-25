@@ -118,6 +118,11 @@ class TestParserMethods(unittest.TestCase):
         args = Args(getr=[""])
         self.assertEqual(self.parser.parse_args(args), -1)
 
+    @mock.patch("stapy.cli.cli.CLI.main")
+    def test_inter(self, mocked_cli):
+        args = Args(inter=True)
+        self.assertEqual(self.parser.parse_args(args), 0)
+
 
 if __name__ == '__main__':
     unittest.main()

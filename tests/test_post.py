@@ -45,7 +45,7 @@ class TestPostMethods(unittest.TestCase):
     
     @mock.patch("requests.post", side_effect=mocked_requests_post)
     def test_featureofinterest(self, mocked_post):
-        self.assertEqual(Post.feature_of_interest("Test", "Test", "Test", {}), 1)
+        self.assertEqual(Post.feature_of_interest("Test", "Test", "Test", {"type": "Point", "coordinates": [1, 2, 3]}), 1)
         with self.assertRaises(Exception):
             Post.feature_of_interest("Test", "Test")
 
@@ -75,9 +75,15 @@ class TestPostMethods(unittest.TestCase):
         Post.observations([1, 2, 5], [5, 2, 1], 1, ["key1", "key2"], [["value1", "value2", "value3"], [5, 2, 1]])
         params, kparams = mocked_post.call_args
         self.assertEqual(params[0], self.API_URL + "CreateObservations")
-        print(kparams)
         self.assertEqual(kparams, {"json": [{"Datastream": {"@iot.id": 1}, "components": ["phenomenonTime", "result", "parameters", "parameters"],
             "dataArray": [[5, 1, {"key1": "value1"}, {"key2": 5}], [2, 2, {"key1": "value2"}, {"key2": 2}], [1, 5, {"key1": "value3"}, {"key2": 1}]]}]})
+
+        Post.observations([1, 2, 5], [5, 2, 1], 1, "key", ["value1", "value2", "value3"])
+        params, kparams = mocked_post.call_args
+        self.assertEqual(params[0], self.API_URL + "CreateObservations")
+        self.assertEqual(kparams, {"json": [{"Datastream": {"@iot.id": 1}, "components": ["phenomenonTime", "result", "parameters"],
+            "dataArray": [[5, 1, {"key": "value1"}], [2, 2, {"key": "value2"}], [1, 5, {"key": "value3"}]]}]})
+
         with self.assertRaises(Exception):
             Post.observations([], [], 1, ["key1"], [1, 5])
 

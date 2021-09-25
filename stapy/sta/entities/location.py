@@ -4,20 +4,16 @@ from stapy.sta.abstract_entity import AbstractEntity
 
 class Location(AbstractEntity):
     entry_map = {
-        "name": (True, str),
-        "description": (True, str),
-        "encodingType": (True, str),
-        "location": (True, {
-            "type": (True, GeoJSON),
-            "coordinates": (True, list)
+        "name": (True, True, str),
+        "description": (True, True, str),
+        "encodingType": (True, True, str),
+        "location": (True, True, {
+            "type": (True, True, GeoJSON),
+            "coordinates": (True, True, list)
         }),
-        "properties": (False, dict),
-        "Things": (False, {
-            "@iot.id": (True, int)
-        }),
-        "HistoricalLocations": (False, {
-            "@iot.id": (True, int)
-        })
+        "properties": (False, True, dict),
+        "Things": (False, True, dict),
+        "HistoricalLocations": (False, True, dict)
     }
 
     def check_entry(self, key, value):
