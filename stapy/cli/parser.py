@@ -7,7 +7,7 @@ from stapy.sta.delete import Delete
 from stapy.sta.entity import Entity
 from stapy.common.log import Log
 from stapy.common.config import config, set_api_url
-from stapy.cli.cli import main
+from stapy.cli.cli import CLI
 from stapy.version import __version__
 
 logger = logging.getLogger('root')
@@ -171,5 +171,5 @@ class Parser(object):
             return -1
 
         if self.args.inter:
-            main()
+            CLI()
             return 0
