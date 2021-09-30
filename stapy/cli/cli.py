@@ -8,7 +8,7 @@ from stapy.sta.request import Request
 from stapy.sta.patch import Patch
 from stapy.sta.abstract_request import AbstractRequest
 
-logger = logging.getLogger('root')
+logger = logging.getLogger("root")
 
 class CLI(object):
 

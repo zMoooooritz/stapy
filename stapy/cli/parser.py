@@ -10,7 +10,7 @@ from stapy.common.config import config, set_api_url
 from stapy.cli.cli import CLI
 from stapy.version import __version__
 
-logger = logging.getLogger('root')
+logger = logging.getLogger("root")
 
 class Parser(object):
 
