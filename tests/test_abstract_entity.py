@@ -94,5 +94,5 @@ class TestAbstractEntityMethods(unittest.TestCase):
         self.assertEqual(thing.get_data()["properties"], props)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

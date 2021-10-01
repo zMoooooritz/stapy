@@ -9,12 +9,12 @@ class TestLogMethods(unittest.TestCase):
         self.assertEquals(Log.NOTSET, Log.from_string("XYZ"))
 
     def test_custom_logger(self):
-        custom_logger('root', Log.INFO.value)
+        custom_logger("root", Log.INFO.value)
         with self.assertRaises(Exception):
-            custom_logger('root', Log.INFO)
+            custom_logger("root", Log.INFO)
         with self.assertRaises(Exception):
-            custom_logger('root')
+            custom_logger("root")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

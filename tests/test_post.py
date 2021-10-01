@@ -107,5 +107,5 @@ class TestPostMethods(unittest.TestCase):
         with self.assertRaises(Exception):
             Post.thing("Test", "Test", location_id="Test")
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

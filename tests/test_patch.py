@@ -73,5 +73,5 @@ class TestPatchMethods(unittest.TestCase):
         with self.assertRaises(Exception):
             Patch.thing(1, "Test", "Test", location_id="Test")
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

@@ -124,5 +124,5 @@ class TestParserMethods(unittest.TestCase):
         self.assertEqual(self.parser.parse_args(args), 0)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

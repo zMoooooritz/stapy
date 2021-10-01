@@ -2,7 +2,7 @@ import unittest
 from unittest import mock
 
 from stapy.common.log import Log
-from stapy.__main__ import main
+from stapy.cli.main import main
 
 class TestMain(unittest.TestCase):
 
@@ -15,5 +15,5 @@ class TestMain(unittest.TestCase):
         main()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

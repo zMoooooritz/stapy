@@ -46,5 +46,5 @@ class TestConfigMethods(unittest.TestCase):
         self.assertEqual(first, second)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

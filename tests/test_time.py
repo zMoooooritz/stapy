@@ -18,5 +18,5 @@ class TestTimeMethods(unittest.TestCase):
         self.assertEqual(str(Time(self.str1 + "-" + self.str1)), "2020-01-01T22:22:22")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

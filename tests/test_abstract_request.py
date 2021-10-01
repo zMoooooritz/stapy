@@ -44,5 +44,5 @@ class TestAbstractRequestMethods(unittest.TestCase):
             Post.send_request(Request.DELETE, "", "")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

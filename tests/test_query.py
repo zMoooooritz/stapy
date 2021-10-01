@@ -162,5 +162,5 @@ class TestExpandMethods(unittest.TestCase):
             Expand(Entity.Observation).expand().get_expand()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

@@ -46,5 +46,5 @@ class TestDeleteMethods(unittest.TestCase):
             Delete.query("xyz(15)")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

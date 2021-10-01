@@ -22,5 +22,5 @@ class TestGeoJSONMethods(unittest.TestCase):
         with self.assertRaises(Exception):
             GeoJSON.is_valid(GeoJSON.Point, "1, 2")
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

@@ -24,5 +24,5 @@ class TestSTAMethods(unittest.TestCase):
         self.assertIsNone(Entity.match(123))
         self.assertIsNone(Entity.match("xyz"))
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

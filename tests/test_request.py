@@ -12,5 +12,5 @@ class TestSTAMethods(unittest.TestCase):
         self.assertIn(Request.POST.value, Request.list())
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

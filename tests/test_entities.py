@@ -22,5 +22,5 @@ class TestEntitiesMethods(unittest.TestCase):
         self.assertFalse(foi.check_entry("feature", {"type": "Point", "coordinates": []}))
         self.assertFalse(foi.check_entry("feature", {"type": GeoJSON.Point, "coordinates": []}))
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

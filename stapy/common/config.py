@@ -1,7 +1,7 @@
 import logging
 import configparser
 
-logger = logging.getLogger('root')
+logger = logging.getLogger("root")
 
 FILENAME = "config.ini"
 
@@ -18,7 +18,7 @@ class Config:
         self.config.read(self.filename)
 
     def save(self):
-        with open(self.filename, 'w') as configfile:
+        with open(self.filename, "w") as configfile:
             self.config.write(configfile)
 
     def get(self, arg):
