@@ -4,7 +4,7 @@ from unittest import mock
 from stapy.cli.parser import Parser
 from stapy.sta.entity import Entity
 from stapy.common.log import Log
-from stapy.common.config import config
+from stapy.common.config import config, set_api_url
 
 class Args(object):
 
@@ -21,7 +21,12 @@ class TestParserMethods(unittest.TestCase):
 
     def setUp(self):
         self.parser = Parser(construct=False)
+        self.url = config.get("api_url")
+        set_api_url("localhost:8080/FROST-Server/v1.1")
 
+    def tearDown(self):
+        set_api_url(self.url)
+    
     @mock.patch("argparse.ArgumentParser.parse_args")
     def test_construct_parser(self, mocked_args):
         mocked_args.return_value = Args(add=["help"])

@@ -6,9 +6,7 @@ class Entity(Enum):
     This class represents all available entities in the SensorThingsAPI (v1.1)
     """
     Datastream = "Datastreams"
-    # MultiDatastream = "MultiDatastreams"
     FeatureOfInterest = "FeaturesOfInterest"
-    # HistoricalLocation = "HistoricalLocations"
     Location = "Locations"
     Observation = "Observations"
     ObservedProperty = "ObservedProperties"

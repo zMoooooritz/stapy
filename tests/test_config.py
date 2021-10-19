@@ -7,6 +7,11 @@ class TestConfigMethods(unittest.TestCase):
 
     filename = "test.ini"
     config = None
+    url = None
+
+    @classmethod
+    def setUpClass(cls):
+        cls.url = config.get("api_url")
 
     def setUp(self):
         os.mknod(self.filename)
@@ -15,6 +20,10 @@ class TestConfigMethods(unittest.TestCase):
     def tearDown(self):
         if os.path.exists(self.filename):
             os.remove(self.filename)
+
+    @classmethod
+    def tearDownClass(cls):
+        config.set(api_url=cls.url)
 
     def test_read(self):
         name = "xyz.ini"

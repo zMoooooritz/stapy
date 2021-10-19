@@ -3,7 +3,7 @@ import configparser
 
 logger = logging.getLogger("root")
 
-FILENAME = "config.ini"
+FILENAME = ".stapy.ini"
 
 class Config:
 
