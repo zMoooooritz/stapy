@@ -6,6 +6,10 @@ logger = logging.getLogger("root")
 FILENAME = ".stapy.ini"
 
 class Config:
+    """
+    This class allows to store and load settings that are relevant for stapy
+    Therefore one does not need to pass this arguments each time stapy is used
+    """
 
     def __init__(self, filename=None):
         self.filename = filename

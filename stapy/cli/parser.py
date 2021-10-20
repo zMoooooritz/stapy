@@ -13,6 +13,9 @@ from stapy.version import __version__
 logger = logging.getLogger("root")
 
 class Parser(object):
+    """
+    This class contains a parser build with argparse to parse command line arguments provided to stapy
+    """
 
     args = None
 

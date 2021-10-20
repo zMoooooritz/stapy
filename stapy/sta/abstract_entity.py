@@ -5,25 +5,35 @@ from stapy.sta.request import Request
 from stapy.sta.entity import Entity
 
 class AbstractEntity(metaclass=abc.ABCMeta):
+    """
+    This abstract class encapsulates some required functions for the classes inside the entities folder
+    """
 
     entry_map = None
     """
-        The attribute entry_map has to be overwritten by every Entity that inherits this class
-        This dict is build up the following way:
-        For each attribute of an entity in the STA it contains a key named the same way
-        Each key has a triple as value
-        The first value describes whether or not this value is mandatory for the respective entity
-        The second value describes whether or not this value can be set from the outside
-        And the last value defines the type of the value
+    The attribute entry_map has to be overwritten by every Entity that inherits this class
+    This dict is build up the following way:
+    For each attribute of an entity in the STA it contains a key named the same way
+    Each key has a triple as value
+    The first value describes whether or not this value is mandatory for the respective entity
+    The second value describes whether or not this value can be set from the outside
+    And the last value defines the type of the value
     """
     json = None
 
     def __init__(self, request=None):
+        """
+        In case the passed request parameter is Post preinitialize json with mandatory data
+        :param request: the type of request to send
+        """
         self.json = {}
         if request == Request.POST:
             self.setup_json()
 
     def setup_json(self):
+        """
+        This method preinitializes the json with the mandatory data / fields
+        """
         for k, (val_req, _, val_type) in self.entry_map.items():
             if not val_req:
                 continue
@@ -33,9 +43,21 @@ class AbstractEntity(metaclass=abc.ABCMeta):
                 self.json.update({k: default(val_type)})
 
     def set_param(self, **data):
+        """
+        Update the json with the provided data
+        :param data: the data to include in the json
+        """
         self.json = self._update_json(self.entry_map, self.json, **data)
 
     def _update_json(self, template, res_json, **data):
+        """
+        This method does the core of the work to include the data in the global json dict
+        It does include recursive calls to allow for multi-layered data in json
+        :param template: defines the format of which the json has to be this is used to parse the data correct
+        :param res_json: this parameter contains the current state of the json dict and where to change the data
+        :param data: the data to be included in the json dict
+        :return: the resulting json with all correct defined entries from data included
+        """
         for k, (val_req, _, val_type) in template.items():
 
             ent = Entity.match(k, threshold=0.8)
@@ -103,13 +125,26 @@ class AbstractEntity(metaclass=abc.ABCMeta):
 
     @abc.abstractmethod
     def check_entry(self, key, value):
+        """
+        Abstract method that needs to be implemented in the concrete entities
+        It checks whether a given value is of the correct format for a specific key
+        """
         raise NotImplementedError
     
     def req_attributes(self):
+        """
+        Return all required attributes of the concrete entity
+        """
         return [k for k, v in self.entry_map.items() if v[0] and v[1]]
     
     def opt_attributes(self):
+        """
+        Return all required attributes of the concrete entity
+        """
         return [k for k, v in self.entry_map.items() if not v[0] and v[1]]
 
     def get_data(self):
+        """
+        Return the json data that can be used for POST and PATCH requests
+        """
         return self.json
