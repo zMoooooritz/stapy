@@ -32,7 +32,7 @@ class TestDeleteMethods(unittest.TestCase):
     @mock.patch("stapy.sta.query.Query.get_data_sets", side_effect=mocked_query_request)
     @mock.patch("stapy.sta.delete.Delete.entity")
     def test_query(self, mocked_delete, mocked_query):
-        Delete.query("Datastream")
+        Delete.query("/Datastream")
         params, kparams = mocked_delete.call_args
         self.assertEqual(params[0], Entity.Datastream)
         self.assertEqual(params[1:][0], [1, 2, 15])

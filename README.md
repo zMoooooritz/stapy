@@ -82,6 +82,9 @@ Following is one example of a `GET` request:
 
 stapy does support all `GET` query options that are available for the [STA](https://developers.sensorup.com/docs/#queryparameters).
 Some examples are select, filter, orderby and skip. These can be chained together as seen in the example above.
+\
+\
+Further use-cases and applications can be found in the [examples](https://github.com/zMoooooritz/stapy/tree/master/examples).
 
 ## Development
 To build this project, run `python setup.py build`. To execute the unit tests, run `python setup.py test`
