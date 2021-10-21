@@ -99,7 +99,7 @@ class TestParserMethods(unittest.TestCase):
     def test_delete(self, mocked_delete_e, mocked_delete_q):
         args = Args(delete=["help"])
         self.assertEqual(self.parser.parse_args(args), 1)
-        args = Args(delete=["xyz"])
+        args = Args(delete=["xyz", 10])
         self.assertEqual(self.parser.parse_args(args), 3)
         args = Args(delete=["ObservedProperty"])
         self.assertEqual(self.parser.parse_args(args), 2)
@@ -113,7 +113,7 @@ class TestParserMethods(unittest.TestCase):
         self.assertEqual(params[1:][0], ids)
 
         path = "/Datastream(1)/ObservedProperties"
-        args = Args(delete=["ObservedProperty", path])
+        args = Args(delete=[path])
         ret = self.parser.parse_args(args)
         params, kparams = mocked_delete_q.call_args
         self.assertEqual(ret, 0)

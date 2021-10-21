@@ -6,10 +6,10 @@ from stapy.sta.query import Query
 from stapy.common.config import set_api_url
 
 __all__ = (
-    [Entity] +
-    [Post] +
-    [Patch] +
-    [Delete] +
-    [Query] +
-    [set_api_url]
+    ["Entity"] +
+    ["Post"] +
+    ["Patch"] +
+    ["Delete"] +
+    ["Query"] +
+    ["set_api_url"]
 )

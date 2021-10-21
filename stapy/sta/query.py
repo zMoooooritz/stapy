@@ -148,19 +148,23 @@ class Query(object):
     def urlopen_with_retry(self, path):
         """
         This method retries to fetch data from the specified path according to the retry parameters
+        :param path: the path which should be opened
         """
         return urllib.request.urlopen(path)
 
-    def get_data_sets(self, count=0):
+    def get_data_sets(self, count=0, query=None):
         """
-        This method extracts all data defined by the different given selectors from the data specified by the path
+        This method extracts all data defined by the different selectors defined with the above methods
         Each defined selector results in one list in the tuple of lists
+        :param count: the number of elements included per list (0 will return all available values)
+        :param query: return all the available data from the specified query if the parameter is not provided
+          build the query with the values defined in the methods above
         :return: tuple of lists of required data
         """
         if len(self._selectors) == 0:
             return []
         self._data_sets = [[] for _ in range(len(self._selectors))]
-        path = self.get_query()
+        path = self.get_query() if query is None else query
         cnt = 0
         finished = False
         is_list = True

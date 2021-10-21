@@ -40,8 +40,14 @@ class TestDeleteMethods(unittest.TestCase):
         params, kparams = mocked_delete.call_args
         self.assertEqual(params[0], Entity.Observation)
         self.assertEqual(params[1:][0], [1, 2, 15])
+        Delete.query("Datastream(15)/ObservedProperty?$top=10")
+        params, kparams = mocked_delete.call_args
+        self.assertEqual(params[0], Entity.ObservedProperty)
+        Delete.query("Datastreams?$filter=id gt 10")
+        params, kparams = mocked_delete.call_args
+        self.assertEqual(params[0], Entity.Datastream)
         with self.assertRaises(Exception):
-            Delete.query("/Datastream(15)")
+            Delete.query("(15)/Observations")
         with self.assertRaises(Exception):
             Delete.query("xyz(15)")
 

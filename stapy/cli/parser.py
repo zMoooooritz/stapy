@@ -87,7 +87,7 @@ class Parser(object):
             args = {}
 
             if len(req_args) > len(self.args.add)-1:
-                print("Not enough arguments supplied for the entity " + entity.value)
+                print("Not enough arguments supplied for the entity " + entity.name)
                 print("The following arguments are mandatory (in this order): " + ", ".join(req_args))
                 print("The following arguments are optional: " + ", ".join(opt_args))
                 return 2
@@ -153,18 +153,17 @@ class Parser(object):
                 print("Or a query path is specified and all entities that satisfy this request will be deleted")
                 return 1
 
-            entity = Entity.match(self.args.delete[0])
-            if entity is None:
-                logger.error("The supplied entity (" + self.args.delete[0] + ") is not valid")
-                logger.error("The valid entities are: " + ", ".join(Entity.list()))
-                return 3
-            if len(self.args.delete) == 1:
-                print("Missing ID or path for the deletion")
-                return 2
-
-            if len(self.args.delete) == 2 and not self.args.delete[1].isdigit():
-                Delete.query(self.args.delete[1])
+            if self.args.delete[0][0] == "/":
+                Delete.query(self.args.delete[0])
             else:
+                entity = Entity.match(self.args.delete[0])
+                if entity is None:
+                    logger.error("The supplied entity (" + self.args.delete[0] + ") is not valid")
+                    logger.error("The valid entities are: " + ", ".join(Entity.list()))
+                    return 3
+                if len(self.args.delete) == 1:
+                    print("Missing ID for the deletion")
+                    return 2
                 Delete.entity(entity, self.args.delete[1:])
             return 0
 
