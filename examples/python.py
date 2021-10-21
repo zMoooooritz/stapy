@@ -17,4 +17,4 @@ ids = Query(Entity.ObservedProperty).select("@iot.id").filter("substringof('Test
 # print(ids)
 
 # delete all ObservedProperties with the name 'TestPropNewName'
-# Delete.query("/ObservedProperties?$filter=substringof('TestPropNewName', name)")
+Delete.query("/ObservedProperties?$filter=substringof('TestPropNewName', name)")
