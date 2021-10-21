@@ -4,7 +4,7 @@ from unittest import mock
 from stapy.cli.parser import Parser
 from stapy.sta.entity import Entity
 from stapy.common.log import Log
-from stapy.common.config import config
+from stapy.common.config import config, set_api_url
 
 class Args(object):
 
@@ -21,7 +21,12 @@ class TestParserMethods(unittest.TestCase):
 
     def setUp(self):
         self.parser = Parser(construct=False)
+        self.url = config.get("api_url")
+        set_api_url("localhost:8080/FROST-Server/v1.1")
 
+    def tearDown(self):
+        set_api_url(self.url)
+    
     @mock.patch("argparse.ArgumentParser.parse_args")
     def test_construct_parser(self, mocked_args):
         mocked_args.return_value = Args(add=["help"])
@@ -94,7 +99,7 @@ class TestParserMethods(unittest.TestCase):
     def test_delete(self, mocked_delete_e, mocked_delete_q):
         args = Args(delete=["help"])
         self.assertEqual(self.parser.parse_args(args), 1)
-        args = Args(delete=["xyz"])
+        args = Args(delete=["xyz", 10])
         self.assertEqual(self.parser.parse_args(args), 3)
         args = Args(delete=["ObservedProperty"])
         self.assertEqual(self.parser.parse_args(args), 2)
@@ -108,7 +113,7 @@ class TestParserMethods(unittest.TestCase):
         self.assertEqual(params[1:][0], ids)
 
         path = "/Datastream(1)/ObservedProperties"
-        args = Args(delete=["ObservedProperty", path])
+        args = Args(delete=[path])
         ret = self.parser.parse_args(args)
         params, kparams = mocked_delete_q.call_args
         self.assertEqual(ret, 0)

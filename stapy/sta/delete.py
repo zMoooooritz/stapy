@@ -29,16 +29,22 @@ class Delete(object):
     @staticmethod
     def query(path):
         """
-        Delete the entities by the query path
+        Delete the entities by included the query path
         :param path: defines all the entities that are supposed to be deleted
         """
-        ent = re.split(r"/|\(", path)[0]
+        if path[0] == "/":
+            path = path[1:]
+        ent = re.split(r"\?|\(", path)[0]
         entity = Entity.match(ent)
         if entity is None:
             raise Exception("invalid path: " + path)
-        if path.find("(") != -1 and path.find("(") < path.find("/"):
-            ent = re.split(r"/|$", path.split("/")[1])[0]
+        par_idx = path.find("(")
+        sl_cond = (path.find("/") != -1) == (par_idx < path.find("/"))
+        qm_cond = (path.find("?") != -1) == (par_idx < path.find("?"))
+        if par_idx != -1 and sl_cond and qm_cond:
+            ent = re.split(r"\?", path.split("/")[1])[0]
             entity = Entity.match(ent) if Entity.match(ent) is not None else entity
 
-        ids = Query(entity).select("@iot.id").get_data_sets()
+        query = config.get("API_URL") + path.replace(" ", "%20")
+        ids = Query(entity).select("@iot.id").get_data_sets(query=query)
         Delete.entity(entity, ids)

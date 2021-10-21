@@ -32,7 +32,7 @@ class TestDeleteMethods(unittest.TestCase):
     @mock.patch("stapy.sta.query.Query.get_data_sets", side_effect=mocked_query_request)
     @mock.patch("stapy.sta.delete.Delete.entity")
     def test_query(self, mocked_delete, mocked_query):
-        Delete.query("Datastream")
+        Delete.query("/Datastream")
         params, kparams = mocked_delete.call_args
         self.assertEqual(params[0], Entity.Datastream)
         self.assertEqual(params[1:][0], [1, 2, 15])
@@ -40,8 +40,14 @@ class TestDeleteMethods(unittest.TestCase):
         params, kparams = mocked_delete.call_args
         self.assertEqual(params[0], Entity.Observation)
         self.assertEqual(params[1:][0], [1, 2, 15])
+        Delete.query("Datastream(15)/ObservedProperty?$top=10")
+        params, kparams = mocked_delete.call_args
+        self.assertEqual(params[0], Entity.ObservedProperty)
+        Delete.query("Datastreams?$filter=id gt 10")
+        params, kparams = mocked_delete.call_args
+        self.assertEqual(params[0], Entity.Datastream)
         with self.assertRaises(Exception):
-            Delete.query("/Datastream(15)")
+            Delete.query("(15)/Observations")
         with self.assertRaises(Exception):
             Delete.query("xyz(15)")
 

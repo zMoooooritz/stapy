@@ -99,7 +99,6 @@ class Post(AbstractRequest):
         params = Post.cast_params(phenomenonTime=phenomenon_time, result=result,
             resultQuality=result_quality, validTime=valid_time, parameters=parameters,
             datastream_id=datastream_id, feature_of_interest_id=feature_of_interest_id)
-        print(params)
         return Post.entity(Entity.Observation, **params)
 
     @staticmethod

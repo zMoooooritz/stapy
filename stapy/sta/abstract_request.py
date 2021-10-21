@@ -7,9 +7,17 @@ from stapy.sta.request import Request
 import stapy.sta.entities as ent
 
 class AbstractRequest(metaclass=abc.ABCMeta):
+    """
+    This abstract class encapsulates some required functions for the POST and PATCH requests
+    """
 
     @staticmethod
     def get_entity(entity):
+        """
+        Return the according concrete entity for an entry of Entity
+        :param entity: the entity that needs to 'translated'
+        :return: the concrete entity
+        """
         switch = {
             Entity.Datastream: ent.Datastream,
             Entity.FeatureOfInterest: ent.FeatureOfInterest,
@@ -23,6 +31,11 @@ class AbstractRequest(metaclass=abc.ABCMeta):
 
     @staticmethod
     def cast_params(**params):
+        """
+        This method received a dictionary of named arguments modifies them slightly and returns one dictionary
+        :param params: the dictionary of named arguments to modify
+        :return: the resulting dict containing the elements
+        """
         final_params = {}
         for k, v in params.items():
             if v is None:
