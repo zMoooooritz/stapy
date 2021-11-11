@@ -1,6 +1,6 @@
 from enum import Enum
 import geojson
-import Levenshtein as lev
+from thefuzz import fuzz
 
 class GeoJSON(Enum):
     """
@@ -49,5 +49,5 @@ class GeoJSON(Enum):
         """
         if not isinstance(obj, str):
             return None
-        max_obj = max(GeoJSON, key=lambda x: lev.ratio(obj.lower(), x.value.lower()))
-        return max_obj if lev.ratio(obj.lower(), max_obj.value.lower()) > threshold else None
+        max_ele, max_val = max([(geo, fuzz.ratio(obj.lower(), geo.value.lower())) for geo in GeoJSON], key=lambda x: x[1])
+        return max_ele if max_val / 100 > threshold else None

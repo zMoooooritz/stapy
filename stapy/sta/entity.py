@@ -1,5 +1,5 @@
 from enum import Enum
-import Levenshtein as lev
+from thefuzz import fuzz
 
 class Entity(Enum):
     """
@@ -60,5 +60,5 @@ class Entity(Enum):
         """
         if not isinstance(entity, str):
             return None
-        max_ent = max(Entity, key=lambda x: lev.ratio(entity.lower(), x.value.lower()))
-        return max_ent if lev.ratio(entity.lower(), max_ent.value.lower()) > threshold else None
+        max_ele, max_val = max([(ent, fuzz.ratio(entity.lower(), ent.value.lower())) for ent in Entity], key=lambda x: x[1])
+        return max_ele if max_val / 100 > threshold else None
