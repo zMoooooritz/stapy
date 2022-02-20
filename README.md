@@ -7,7 +7,8 @@
 This is an easy to use SensorThings API Client written in Python
 
 The SensorThings API (STA) is an [OGC](https://www.osgeo.org/partners/ogc/) standard for IoT device sensing data.\
-A server implementation of the STA can be found here [FROST](https://github.com/FraunhoferIOSB/FROST-Server)
+A server implementation of the STA can be found here [FROST](https://github.com/FraunhoferIOSB/FROST-Server).\
+For more (advanced) information about the SensorThings API see the official OGC [documentation](http://developers.sensorup.com/docs).
 
 ## Installation
 
