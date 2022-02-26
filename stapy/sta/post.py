@@ -136,7 +136,7 @@ class Post(AbstractRequest):
                 payload["components"].append("parameters")
                 for v_idx, value in enumerate(values[idx]):
                     payload["dataArray"][v_idx].append({key: value})
-        path = config.get("API_URL") + "CreateObservations"
+        path = config.get("STA_URL") + "CreateObservations"
         requests.post(path, json=[payload])
 
     @staticmethod

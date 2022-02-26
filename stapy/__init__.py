@@ -3,7 +3,7 @@ from stapy.sta.post import Post
 from stapy.sta.patch import Patch
 from stapy.sta.delete import Delete
 from stapy.sta.query import Query
-from stapy.common.config import set_api_url
+from stapy.common.config import set_sta_url, set_credentials
 
 __all__ = (
     ["Entity"] +
@@ -11,5 +11,6 @@ __all__ = (
     ["Patch"] +
     ["Delete"] +
     ["Query"] +
-    ["set_api_url"]
+    ["set_sta_url"] +
+    ["set_credentials"]
 )

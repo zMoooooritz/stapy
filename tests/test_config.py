@@ -1,7 +1,7 @@
 import unittest
 import os
 
-from stapy.common.config import config, Config, set_api_url
+from stapy.common.config import config, Config, set_sta_url
 
 class TestConfigMethods(unittest.TestCase):
 
@@ -11,7 +11,7 @@ class TestConfigMethods(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.url = config.get("api_url")
+        cls.url = config.get("sta_url")
 
     def setUp(self):
         os.mknod(self.filename)
@@ -23,7 +23,7 @@ class TestConfigMethods(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        config.set(api_url=cls.url)
+        config.set(sta_url=cls.url)
 
     def test_read(self):
         name = "xyz.ini"
@@ -43,15 +43,15 @@ class TestConfigMethods(unittest.TestCase):
         self.assertEqual(self.config.get("var"), str({"test": "test"}))
         self.assertEqual(self.config.get("xyz"), "")
 
-    def test_set_api_url(self):
-        before = config.get("API_URL")
-        set_api_url(10)
-        after = config.get("API_URL")
+    def test_set_sta_url(self):
+        before = config.get("STA_URL")
+        set_sta_url(10)
+        after = config.get("STA_URL")
         self.assertEqual(before, after)
-        set_api_url("localhost:8080/FROST-Server/v1.1")
-        first = config.get("API_URL")
-        set_api_url("localhost:8080/FROST-Server/v1.1/")
-        second = config.get("API_URL")
+        set_sta_url("localhost:8080/FROST-Server/v1.1")
+        first = config.get("STA_URL")
+        set_sta_url("localhost:8080/FROST-Server/v1.1/")
+        second = config.get("STA_URL")
         self.assertEqual(first, second)
 
 

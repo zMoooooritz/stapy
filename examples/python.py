@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 
-# from stapy import set_api_url, Post, Patch, Delete, Query, Entity
+# from stapy import set_sta_url, Post, Patch, Delete, Query, Entity
 from stapy import *
 
 # set the url of the STA instance
-set_api_url("http://localhost:8080/FROST-Server/v1.1/")
+set_sta_url("http://localhost:8080/FROST-Server/v1.1/")
 
 # post / add a new ObservedProperty with the given values
 op_id = Post.observed_property("TestPropName", "TestPropDesc", "TestPropDef", properties={"TestPropKey": "TestPropValue"})

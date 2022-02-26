@@ -17,14 +17,20 @@ class Delete(object):
         :param entity: the type of entities to delete
         :param ids: a list of entities to delete
         """
+        api_usr = config.get("STA_USR")
+        api_pwd = config.get("STA_PWD")
+
         if not isinstance(ids, list):
             ids = [ids]
         for e_id in ids:
             if str(e_id).isdigit():
                 try:
-                    requests.delete(Query(entity).entity_id(int(e_id)).get_query())
+                    if api_usr != "" and api_pwd != "":
+                        requests.delete(Query(entity).entity_id(int(e_id)).get_query(), auth=requests.auth.HTTPBasicAuth(api_usr, api_pwd))
+                    else:
+                        requests.delete(Query(entity).entity_id(int(e_id)).get_query())
                 except Exception:
-                    raise Exception("the supplied API_URL \"" + config.get("API_URL") + "\" is not valid")
+                    raise Exception("the supplied STA_URL \"" + config.get("STA_URL") + "\" is not valid")
 
     @staticmethod
     def query(path):
@@ -45,6 +51,6 @@ class Delete(object):
             ent = re.split(r"\?", path.split("/")[1])[0]
             entity = Entity.match(ent) if Entity.match(ent) is not None else entity
 
-        query = config.get("API_URL") + path.replace(" ", "%20")
+        query = config.get("STA_URL") + path.replace(" ", "%20")
         ids = Query(entity).select("@iot.id").get_data_sets(query=query)
         Delete.entity(entity, ids)

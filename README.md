@@ -22,22 +22,25 @@ pip install stapy
 
 `stapy` can be used both form the command line (in two different ways) and as a Python library.
 
-### API_URL
+### STA_URL
 
 At first it is necessary to set the URL of the STA.
+Optionally it is also possible to set credentials for a basic authentication.
 Within the CLI this can be achieved as follows:
 ```bash
-stapy -u {URL}
+stapy -u {URL} ({USR} {PWD})
 ```
 `stapy` can of course be also run as a Python module(`python -m stapy`)
 \
 \
-The URL can also be set from within a Python script:
+The URL and credentials can also be set from within a Python script:
 ```python
 >>> import stapy
 
->>> stapy.set_api_url({URL})
+>>> stapy.set_sta_url({URL})
+>>> stapy.set_credentials({USR}, {PWD})
 ```
+
 
 ### CLI - Interactive
 

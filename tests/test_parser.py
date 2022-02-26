@@ -4,7 +4,7 @@ from unittest import mock
 from stapy.cli.parser import Parser
 from stapy.sta.entity import Entity
 from stapy.common.log import Log
-from stapy.common.config import config, set_api_url
+from stapy.common.config import config, set_sta_url
 
 class Args(object):
 
@@ -21,11 +21,11 @@ class TestParserMethods(unittest.TestCase):
 
     def setUp(self):
         self.parser = Parser(construct=False)
-        self.url = config.get("api_url")
-        set_api_url("localhost:8080/FROST-Server/v1.1")
+        self.url = config.get("sta_url")
+        set_sta_url("localhost:8080/FROST-Server/v1.1")
 
     def tearDown(self):
-        set_api_url(self.url)
+        set_sta_url(self.url)
     
     @mock.patch("argparse.ArgumentParser.parse_args")
     def test_construct_parser(self, mocked_args):
@@ -38,12 +38,12 @@ class TestParserMethods(unittest.TestCase):
         self.assertEqual(Parser().get_log_level(), Log.WARNING.value)
 
     def test_url(self):
-        config.set(api_url="")
+        config.set(sta_url="")
         args = Args(add=[""])
         self.assertEqual(self.parser.parse_args(args), -1)
         args = Args(url=["value"])
         self.parser.parse_args(args)
-        self.assertEqual(config.get("api_url"), "value/")
+        self.assertEqual(config.get("sta_url"), "value/")
 
     @mock.patch("stapy.sta.post.Post.entity")
     def test_add(self, mocked_post):
