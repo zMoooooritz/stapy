@@ -39,11 +39,16 @@ class Config:
 
 config = Config()
 
-def set_api_url(api_url):
-    if not isinstance(api_url, str):
-        logger.critical("The provided url (" + str(api_url) + ") is not valid")
+def set_sta_url(sta_url):
+    if not isinstance(sta_url, str):
+        logger.critical("The provided url (" + str(sta_url) + ") is not valid")
         return
-    if not api_url.endswith("/"):
-        api_url = api_url + "/"
-    config.set(API_URL = api_url)
+    if not sta_url.endswith("/"):
+        sta_url = sta_url + "/"
+    config.set(STA_URL = sta_url)
+    config.save()
+
+def set_credentials(sta_usr, sta_pwd):
+    config.set(STA_USR = sta_usr)
+    config.set(STA_PWD = sta_pwd)
     config.save()

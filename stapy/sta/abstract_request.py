@@ -57,24 +57,30 @@ class AbstractRequest(metaclass=abc.ABCMeta):
         :param payload: the content of the message
         :return: the ID of the created or edited entity
         """
-        try:
-            if request == Request.POST:
-                resp = requests.post(path, json=payload)
-            elif request == Request.PATCH:
-                resp = requests.patch(path, json=payload)
-            else:
-                raise Exception("Invalid request type")
-        except Exception:
-            raise ValueError("The supplied API_URL \"" + config.get("API_URL") + "\" is not valid")
-        if not resp.ok:
-            if "message" in resp.json():
-                print("Request was not successful (" + resp.json().get("message") + ")")
+
+        if request == Request.POST:
+            request_method = requests.post
+        elif request == Request.PATCH:
+            request_method = requests.patch
+        else:
+            raise Exception("Invalid request type")
+
+        api_usr = config.get("STA_USR")
+        api_pwd = config.get("STA_PWD")
+        if api_usr != "" and api_pwd != "":
+            response = request_method(path, json=payload, auth=requests.auth.HTTPBasicAuth(api_usr, api_pwd))
+        else:
+            response = request_method(path, json=payload)
+
+        if not response.ok:
+            if "message" in response.json():
+                print("Request was not successful (" + response.json().get("message") + ")")
                 return -1
             else:
-                print("An error ocurred, request failed")
+                print("An error occurred, request failed")
                 return -1
         elif request == Request.POST:
-            loc = resp.headers["location"]
+            loc = response.headers["location"]
             return int(loc[loc.find("(")+1:loc.find(")")])
         elif request == Request.PATCH:
             return int(path[path.find("(")+1:path.find(")")])

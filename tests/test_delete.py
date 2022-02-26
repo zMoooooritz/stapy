@@ -11,18 +11,18 @@ def mocked_query_request(*args, **kwargs):
 class TestDeleteMethods(unittest.TestCase):
 
     def setUp(self):
-        self.API_URL = config.get("API_URL")
+        self.STA_URL = config.get("STA_URL")
 
     @mock.patch("requests.delete")
     def test_entity(self, mocked_delete):
         Delete.entity(Entity.Datastream, "15")
         params, kparams = mocked_delete.call_args
-        self.assertEqual(params[0], self.API_URL + "Datastreams(15)")
+        self.assertEqual(params[0], self.STA_URL + "Datastreams(15)")
         Delete.entity(Entity.Datastream, 15)
         params, kparams = mocked_delete.call_args
-        self.assertEqual(params[0], self.API_URL + "Datastreams(15)")
+        self.assertEqual(params[0], self.STA_URL + "Datastreams(15)")
         Delete.entity(Entity.Datastream, [15, 16, 17])
-        urls = [f'{self.API_URL}Datastreams({index})' for index in [15, 16, 17]]
+        urls = [f'{self.STA_URL}Datastreams({index})' for index in [15, 16, 17]]
         params, kparams = mocked_delete.call_args
         self.assertIn(params[0], urls)
         Delete.entity(Entity.Datastream, "abc")

@@ -6,7 +6,7 @@ from stapy.sta.patch import Patch
 from stapy.sta.delete import Delete
 from stapy.sta.entity import Entity
 from stapy.common.log import Log
-from stapy.common.config import config, set_api_url
+from stapy.common.config import config, set_sta_url, set_credentials
 from stapy.cli.cli import CLI
 from stapy.version import __version__
 
@@ -31,8 +31,8 @@ class Parser(object):
                 with the argument 'help'")
         parser.add_argument("-l", "--log", type=Log.from_string, choices=list(Log), default=Log.WARNING,
                             help="define the log level", metavar="CRITICAL,ERROR,WARNING,INFO,DEBUG,NOTSET")
-        parser.add_argument("-u", "--url", nargs=1, metavar=("URL"),
-                            help="set the url of the SensorThings API backend")
+        parser.add_argument("-u", "--url", nargs="+", metavar=("URL"),
+                            help="set the url (and credentials) of the SensorThings API backend")
         parser.add_argument("-a", "--add", nargs="+", metavar=("Entity", "Parameters"),
                             help="add new entities")
         parser.add_argument("-p", "--patch", nargs="+", metavar=("Entity", "ID, Parameters"),
@@ -56,10 +56,12 @@ class Parser(object):
             self.args = args
 
         if self.args.url:
-            set_api_url(self.args.url[0])
+            set_sta_url(self.args.url[0])
+            if len(self.args.url) > 2:
+                set_credentials(self.args.url[1], self.args.url[2])
 
         if self.args.add or self.args.patch or self.args.delete or self.args.getr or self.args.inter:
-            if config.get("API_URL") == "":
+            if config.get("STA_URL") == "":
                 logger.critical("The url has to be set before using the application (see --help)")
                 logger.info("ending application")
                 return -1

@@ -1,5 +1,5 @@
 import json
-import urllib.request
+import requests
 
 from stapy.sta.entity import Entity
 from stapy.common.config import config
@@ -135,7 +135,7 @@ class Query(object):
         entity = self._build_entity()
         expand = "$" + self._build_expands()
         selector = _build_selector(self._params, "&")
-        query = config.get("API_URL") + entity
+        query = config.get("STA_URL") + entity
         if len(self._expands) > 0 and len(self._params) > 0:
             query += "?" + expand + "&" + selector
         elif len(self._expands) > 0:
@@ -144,13 +144,19 @@ class Query(object):
             query += "?" + selector
         return query
 
-    @retry(urllib.error.HTTPError, tries=5, delay=1, backoff=2)
-    def urlopen_with_retry(self, path):
+    @retry(requests.HTTPError, tries=5, delay=1, backoff=2)
+    def get_with_retry(self, path):
         """
         This method retries to fetch data from the specified path according to the retry parameters
         :param path: the path which should be opened
         """
-        return urllib.request.urlopen(path)
+        api_usr = config.get("STA_USR")
+        api_pwd = config.get("STA_PWD")
+
+        if api_usr != "" and api_pwd != "":
+            return requests.get(path, auth=requests.auth.HTTPBasicAuth(api_usr, api_pwd))
+        else:
+            return requests.get(path)
 
     def get_data_sets(self, count=0, query=None):
         """
@@ -169,8 +175,8 @@ class Query(object):
         finished = False
         is_list = True
         while True:
-            url = self.urlopen_with_retry(path)
-            data = json.loads(url.read().decode())
+            response = self.get_with_retry(path)
+            data = json.loads(response.content)
             try:
                 payload = data["value"]
             except KeyError:

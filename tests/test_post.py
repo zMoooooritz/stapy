@@ -28,7 +28,7 @@ def mocked_requests_post(*args, **kwargs):
 class TestPostMethods(unittest.TestCase):
 
     def setUp(self):
-        self.API_URL = config.get("API_URL")
+        self.STA_URL = config.get("STA_URL")
 
     @mock.patch("requests.post", side_effect=mocked_requests_post)
     def test_datastream(self, mocked_post):
@@ -66,21 +66,21 @@ class TestPostMethods(unittest.TestCase):
     def test_observations(self, mocked_post):
         Post.observations([], [], 1)
         params, kparams = mocked_post.call_args
-        self.assertEqual(params[0], self.API_URL + "CreateObservations")
+        self.assertEqual(params[0], self.STA_URL + "CreateObservations")
         self.assertEqual(kparams, {"json": [{"Datastream": {"@iot.id": 1}, "components": ["phenomenonTime", "result"], "dataArray": []}]})
         Post.observations([1, 2, 5], [5, 2, 1], 1)
         params, kparams = mocked_post.call_args
-        self.assertEqual(params[0], self.API_URL + "CreateObservations")
+        self.assertEqual(params[0], self.STA_URL + "CreateObservations")
         self.assertEqual(kparams, {"json": [{"Datastream": {"@iot.id": 1}, "components": ["phenomenonTime", "result"], "dataArray": [[5, 1], [2, 2], [1, 5]]}]})
         Post.observations([1, 2, 5], [5, 2, 1], 1, ["key1", "key2"], [["value1", "value2", "value3"], [5, 2, 1]])
         params, kparams = mocked_post.call_args
-        self.assertEqual(params[0], self.API_URL + "CreateObservations")
+        self.assertEqual(params[0], self.STA_URL + "CreateObservations")
         self.assertEqual(kparams, {"json": [{"Datastream": {"@iot.id": 1}, "components": ["phenomenonTime", "result", "parameters", "parameters"],
             "dataArray": [[5, 1, {"key1": "value1"}, {"key2": 5}], [2, 2, {"key1": "value2"}, {"key2": 2}], [1, 5, {"key1": "value3"}, {"key2": 1}]]}]})
 
         Post.observations([1, 2, 5], [5, 2, 1], 1, "key", ["value1", "value2", "value3"])
         params, kparams = mocked_post.call_args
-        self.assertEqual(params[0], self.API_URL + "CreateObservations")
+        self.assertEqual(params[0], self.STA_URL + "CreateObservations")
         self.assertEqual(kparams, {"json": [{"Datastream": {"@iot.id": 1}, "components": ["phenomenonTime", "result", "parameters"],
             "dataArray": [[5, 1, {"key": "value1"}], [2, 2, {"key": "value2"}], [1, 5, {"key": "value3"}]]}]})
 
