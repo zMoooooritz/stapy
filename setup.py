@@ -35,10 +35,10 @@ License :: OSI Approved :: MIT License
 Operating System :: OS Independent
 Programming Language :: Python
 Programming Language :: Python :: 3
-Programming Language :: Python :: 3.6
 Programming Language :: Python :: 3.7
 Programming Language :: Python :: 3.8
 Programming Language :: Python :: 3.9
+Programming Language :: Python :: 3.10
 Programming Language :: Python :: Implementation :: CPython
 Programming Language :: Python :: Implementation :: PyPy
 Topic :: Scientific/Engineering
@@ -58,7 +58,7 @@ setup(
     packages=find_packages(exclude=["docs", "tests*"]),
     install_requires=install_requires,
     test_suite="setup.test_suite",
-    python_requires=">=3.6,<3.10",
+    python_requires=">=3.7,<=3.10",
     classifiers=classifiers.splitlines(),
     entry_points={
         "console_scripts": [

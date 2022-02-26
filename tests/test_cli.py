@@ -64,7 +64,7 @@ class TestSTAMethods(unittest.TestCase):
         self.assertEqual(cap_first("Test"), "Test")
         self.assertEqual(cap_first(0), "")
 
-    @mock.patch("PyInquirer.prompt")
+    @mock.patch("inquirer.prompt")
     def test_cprompt(self, mocked_prompt):
         mocked_prompt.side_effect = {}
         with self.assertRaises(SystemExit):

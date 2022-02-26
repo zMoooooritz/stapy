@@ -1,4 +1,4 @@
-from PyInquirer import prompt
+from inquirer import prompt
 import logging
 
 from stapy.sta.entity import Entity
@@ -12,7 +12,7 @@ logger = logging.getLogger("root")
 
 class CLI(object):
     """
-    This class contains the interactive TUI build with PyInquirer
+    This class contains the interactive TUI build with inquirer
     """
 
     def __init__(self):
