@@ -1,4 +1,5 @@
 import abc
+import logging
 import requests
 
 from stapy.common.config import config
@@ -74,10 +75,10 @@ class AbstractRequest(metaclass=abc.ABCMeta):
 
         if not response.ok:
             if "message" in response.json():
-                print("Request was not successful (" + response.json().get("message") + ")")
+                logging.info("Request was not successful (" + response.json().get("message") + ")")
                 return -1
             else:
-                print("An error occurred, request failed")
+                logging.warning("An error occurred, request failed")
                 return -1
         elif request == Request.POST:
             loc = response.headers["location"]

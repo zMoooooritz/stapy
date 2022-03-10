@@ -1,9 +1,12 @@
 import unittest
+import logging
 from unittest import mock
 
 from stapy.sta.delete import Delete
 from stapy.sta.entity import Entity
 from stapy.common.config import config
+
+logging.disable(logging.CRITICAL)
 
 def mocked_query_request(*args, **kwargs):
     return [1, 2, 15]

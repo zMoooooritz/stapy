@@ -1,6 +1,9 @@
 import unittest
+import logging
 
 from stapy.sta.request import Request
+
+logging.disable(logging.CRITICAL)
 
 class TestSTAMethods(unittest.TestCase):
 

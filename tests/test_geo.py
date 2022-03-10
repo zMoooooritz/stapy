@@ -1,6 +1,9 @@
+import unittest
+import logging
+
 from stapy.sta.geo import GeoJSON
 
-import unittest
+logging.disable(logging.CRITICAL)
 
 class TestGeoJSONMethods(unittest.TestCase):
 

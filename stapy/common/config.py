@@ -1,8 +1,6 @@
 import logging
 import configparser
 
-logger = logging.getLogger("root")
-
 FILENAME = ".stapy.ini"
 
 class Config:
@@ -29,7 +27,7 @@ class Config:
         try:
             return self.config["DEFAULT"][arg]
         except KeyError:
-            logger.critical("The provided key (" + str(arg) + ") does not exist in the config file")
+            logging.critical("The provided key (" + str(arg) + ") does not exist in the config file")
             return ""
 
     def set(self, **kwargs):
@@ -41,7 +39,7 @@ config = Config()
 
 def set_sta_url(sta_url):
     if not isinstance(sta_url, str):
-        logger.critical("The provided url (" + str(sta_url) + ") is not valid")
+        logging.critical("The provided url (" + str(sta_url) + ") is not valid")
         return
     if not sta_url.endswith("/"):
         sta_url = sta_url + "/"

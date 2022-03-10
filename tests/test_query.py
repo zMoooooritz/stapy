@@ -1,9 +1,12 @@
 import unittest
+import logging
 from unittest import mock
 
 from stapy.sta.query import Query, Expand
 from stapy.sta.entity import Entity
 from stapy.common.config import config
+
+logging.disable(logging.CRITICAL)
 
 def build_ob_prop_json(ids, names, defs, descs):
     data = {"value": []}

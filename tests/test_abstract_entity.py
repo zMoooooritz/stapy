@@ -1,10 +1,13 @@
-import unittest
 import json
+import logging
+import unittest
 
 import stapy.sta.entities as ent
 from stapy.sta.request import Request
 from stapy.sta.patch import Patch
 from stapy.sta.geo import GeoJSON
+
+logging.disable(logging.CRITICAL)
 
 class TestAbstractEntityMethods(unittest.TestCase):
 
