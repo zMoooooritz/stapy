@@ -1,8 +1,11 @@
 import unittest
+import logging
 from unittest import mock
 
 from stapy.common.log import Log
 from stapy.cli.main import main
+
+logging.disable(logging.CRITICAL)
 
 class TestMain(unittest.TestCase):
 

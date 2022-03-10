@@ -1,8 +1,11 @@
 import unittest
+import logging
 from unittest import mock
 
 from stapy.sta.entity import Entity
 from stapy.cli.cli import CLI, cap_first, cprompt
+
+logging.disable(logging.CRITICAL)
 
 class TestSTAMethods(unittest.TestCase):
 

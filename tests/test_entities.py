@@ -1,7 +1,10 @@
 import unittest
+import logging
 
 import stapy.sta.entities as ent
 from stapy.sta.geo import GeoJSON
+
+logging.disable(logging.CRITICAL)
 
 class TestEntitiesMethods(unittest.TestCase):
 

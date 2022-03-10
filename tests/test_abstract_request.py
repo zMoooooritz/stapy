@@ -1,10 +1,13 @@
 import unittest
+import logging
 from unittest import mock
 
 from stapy.sta.post import Post
 from stapy.sta.entity import Entity
 from stapy.sta.request import Request
 import stapy.sta.entities as ent
+
+logging.disable(logging.CRITICAL)
 
 class PostMock(object):
     def __init__(self, json_data, status_code):

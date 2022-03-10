@@ -1,8 +1,11 @@
 import unittest
+import logging
 from unittest import mock
 
 from stapy.sta.patch import Patch
 from stapy.sta.entity import Entity
+
+logging.disable(logging.CRITICAL)
 
 def mocked_requests_patch(*args, **kwargs):
     class MockResponse:

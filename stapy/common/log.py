@@ -24,20 +24,14 @@ class Log(Enum):
         except KeyError:
             return Log.NOTSET
 
-
-def custom_logger(name, level):
+def create_logger(level = None):
     """
     Create a basic logger with some special settings
-    :param name: the name of the logger
     :param level: the level of log to use
-    :return: the resulting logger
     """
-    formatter = logging.Formatter(fmt='%(asctime)s - %(levelname)s - %(module)s - %(message)s')
-
-    handler = logging.StreamHandler()
-    handler.setFormatter(formatter)
-
-    logger = logging.getLogger(name)
-    logger.setLevel(level)
-    logger.addHandler(handler)
-    return logger
+    if level is None:
+        level = logging.INFO
+    logging.basicConfig(
+        format='%(asctime)s - %(levelname)s - %(module)s - %(message)s',
+        level=level
+    )

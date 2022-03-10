@@ -1,9 +1,12 @@
 import unittest
+import logging
 from unittest import mock
 
 from stapy.sta.post import Post
 from stapy.sta.entity import Entity
 from stapy.common.config import config
+
+logging.disable(logging.CRITICAL)
 
 def mocked_requests_post(*args, **kwargs):
     class MockResponse:

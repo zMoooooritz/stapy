@@ -1,10 +1,13 @@
 import unittest
+import logging
 from unittest import mock
 
 from stapy.cli.parser import Parser
 from stapy.sta.entity import Entity
 from stapy.common.log import Log
 from stapy.common.config import config, set_sta_url
+
+logging.disable(logging.CRITICAL)
 
 class Args(object):
 

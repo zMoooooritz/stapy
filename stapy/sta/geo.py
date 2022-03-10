@@ -1,5 +1,6 @@
-from enum import Enum
 import geojson
+import logging
+from enum import Enum
 from thefuzz import fuzz
 
 class GeoJSON(Enum):
@@ -26,7 +27,7 @@ class GeoJSON(Enum):
         :return: if the given obj and params build up a valid geojson object
         """
         if not isinstance(obj, GeoJSON):
-            print("The given object is not a valid GeoJSON object: " + str(obj))
+            logging.warning("The given object is not a valid GeoJSON object: " + str(obj))
             return False
 
         switch = {

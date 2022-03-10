@@ -1,6 +1,9 @@
 import unittest
+import logging
 
 from stapy.sta.time import Time
+
+logging.disable(logging.CRITICAL)
 
 class TestTimeMethods(unittest.TestCase):
 

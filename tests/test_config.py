@@ -1,7 +1,10 @@
-import unittest
 import os
+import logging
+import unittest
 
 from stapy.common.config import config, Config, set_sta_url
+
+logging.disable(logging.CRITICAL)
 
 class TestConfigMethods(unittest.TestCase):
 
