@@ -16,9 +16,9 @@ class Time(object):
         """
         if not isinstance(time, str):
             raise Exception("Invalid value for time: " + str(time))
-        self.start_time = self.parse(time.split("-")[0])
-        if "-" in time:
-            self.end_time = self.parse(time.split("-")[1])
+        self.start_time = self.parse(time.split("/")[0])
+        if "/" in time:
+            self.end_time = self.parse(time.split("/")[1])
 
     def __str__(self):
         """
@@ -35,7 +35,7 @@ class Time(object):
                 return self.start_time.isoformat()
             if self.end_time < self.start_time:
                 self.start_time, self.end_time = self.end_time, self.start_time
-            return self.start_time.isoformat() + "-" + self.end_time.isoformat()
+            return self.start_time.isoformat() + "/" + self.end_time.isoformat()
 
     def parse(self, date_str):
         """
@@ -44,6 +44,6 @@ class Time(object):
         :return: the datetime or None if the provided date_str cant be converted
         """
         try:
-            return dparser.parse(date_str, fuzzy=True, dayfirst=True)
+            return dparser.parse(date_str, fuzzy=True)
         except Exception:
             return None
