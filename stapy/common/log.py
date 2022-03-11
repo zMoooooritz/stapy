@@ -24,7 +24,7 @@ class Log(Enum):
         except KeyError:
             return Log.NOTSET
 
-def create_logger(level = None):
+def setup_logger(level = None):
     """
     Create a basic logger with some special settings
     :param level: the level of log to use

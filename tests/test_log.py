@@ -1,7 +1,7 @@
 import unittest
 import logging
 
-from stapy.common.log import Log, create_logger
+from stapy.common.log import Log, setup_logger
 
 logging.disable(logging.CRITICAL)
 
@@ -12,7 +12,7 @@ class TestLogMethods(unittest.TestCase):
         self.assertEqual(Log.NOTSET, Log.from_string("XYZ"))
 
     def test_custom_logger(self):
-        create_logger(Log.INFO.value)
+        setup_logger(Log.INFO.value)
 
 if __name__ == "__main__":
     unittest.main()

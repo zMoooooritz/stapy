@@ -31,7 +31,7 @@ def mocked_requests_post(*args, **kwargs):
 class TestPostMethods(unittest.TestCase):
 
     def setUp(self):
-        self.STA_URL = config.get("STA_URL")
+        self.STA_URL = config.load_sta_url()
 
     @mock.patch("requests.post", side_effect=mocked_requests_post)
     def test_datastream(self, mocked_post):

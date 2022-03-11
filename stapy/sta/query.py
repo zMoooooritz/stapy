@@ -135,7 +135,7 @@ class Query(object):
         entity = self._build_entity()
         expand = "$" + self._build_expands()
         selector = _build_selector(self._params, "&")
-        query = config.get("STA_URL") + entity
+        query = config.load_sta_url() + entity
         if len(self._expands) > 0 and len(self._params) > 0:
             query += "?" + expand + "&" + selector
         elif len(self._expands) > 0:
@@ -150,13 +150,8 @@ class Query(object):
         This method retries to fetch data from the specified path according to the retry parameters
         :param path: the path which should be opened
         """
-        api_usr = config.get("STA_USR")
-        api_pwd = config.get("STA_PWD")
-
-        if api_usr != "" and api_pwd != "":
-            return requests.get(path, auth=requests.auth.HTTPBasicAuth(api_usr, api_pwd))
-        else:
-            return requests.get(path)
+        auth = config.load_authentication()
+        return requests.get(path, auth=auth)
 
     def get_data_sets(self, count=0, query=None):
         """

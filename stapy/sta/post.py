@@ -1,4 +1,5 @@
 import requests
+import logging
 
 from stapy.sta.query import Query
 from stapy.sta.entity import Entity
@@ -136,7 +137,7 @@ class Post(AbstractRequest):
                 payload["components"].append("parameters")
                 for v_idx, value in enumerate(values[idx]):
                     payload["dataArray"][v_idx].append({key: value})
-        path = config.get("STA_URL") + "CreateObservations"
+        path = config.load_sta_url() + "CreateObservations"
         requests.post(path, json=[payload])
 
     @staticmethod
@@ -195,4 +196,5 @@ class Post(AbstractRequest):
         ent.set_param(**params)
         payload = ent.get_data()
         path = Query(entity).get_query()
+        logging.critical("das ist meine log msg")
         return Post.send_request(Request.POST, path, payload)

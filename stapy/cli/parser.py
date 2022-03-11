@@ -59,7 +59,7 @@ class Parser(object):
                 set_credentials(self.args.url[1], self.args.url[2])
 
         if self.args.add or self.args.patch or self.args.delete or self.args.getr or self.args.inter:
-            if config.get("STA_URL") == "":
+            if config.load_sta_url() is None:
                 logging.critical("The url has to be set before using the application (see --help)")
                 logging.info("ending application")
                 return -1
