@@ -6,7 +6,7 @@ from stapy.sta.patch import Patch
 from stapy.sta.delete import Delete
 from stapy.sta.entity import Entity
 from stapy.common.log import Log
-from stapy.common.config import config, set_sta_url, set_credentials
+from stapy.common.config import config, set_log_level, set_sta_url, set_credentials
 from stapy.cli.cli import CLI
 from stapy.version import __version__
 
@@ -27,10 +27,12 @@ class Parser(object):
             prog="stapy",
             epilog="To get some additional usage information the options add/patch/delete/get can be supplied \
                 with the argument 'help'")
-        parser.add_argument("-l", "--log", type=Log.from_string, choices=list(Log), default=Log.WARNING,
+        parser.add_argument("-l", "--log", type=Log.from_string, choices=list(Log), default=None,
                             help="define the log level", metavar="CRITICAL,ERROR,WARNING,INFO,DEBUG,NOTSET")
-        parser.add_argument("-u", "--url", nargs="+", metavar=("URL"),
-                            help="set the url (and credentials) of the SensorThings API backend")
+        parser.add_argument("-u", "--url", nargs=1, metavar=("URL"),
+                            help="set the url of the SensorThings API backend")
+        parser.add_argument("-c", "--cred", nargs=2, metavar=("USR", "PWD"),
+                            help="set the credentials of the SensorThings API backend")
         parser.add_argument("-a", "--add", nargs="+", metavar=("Entity", "Parameters"),
                             help="add new entities")
         parser.add_argument("-p", "--patch", nargs="+", metavar=("Entity", "ID, Parameters"),
@@ -47,7 +49,11 @@ class Parser(object):
         self.args = parser.parse_args()
 
     def get_log_level(self):
-        return self.args.log.value
+        log = self.args.log
+        if log is None:
+            return config.load_log_lvl()
+        set_log_level(log.value)
+        return log.value
 
     def parse_args(self, args=None):
         if args is not None:
@@ -55,8 +61,9 @@ class Parser(object):
 
         if self.args.url:
             set_sta_url(self.args.url[0])
-            if len(self.args.url) > 2:
-                set_credentials(self.args.url[1], self.args.url[2])
+
+        if self.args.cred:
+            set_credentials(self.args.cred[0], self.args.cred[1])
 
         if self.args.add or self.args.patch or self.args.delete or self.args.getr or self.args.inter:
             if config.load_sta_url() is None:

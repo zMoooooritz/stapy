@@ -1,6 +1,8 @@
 import logging
 from enum import Enum
 
+DEFAULT_LOG_LEVEL = logging.WARNING
+
 class Log(Enum):
     """
     An Enum that represents all available log levels

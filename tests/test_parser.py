@@ -1,5 +1,6 @@
-import unittest
 import logging
+import unittest
+import requests
 from unittest import mock
 
 from stapy.cli.parser import Parser
@@ -11,12 +12,13 @@ logging.disable(logging.CRITICAL)
 
 class Args(object):
 
-    def __init__(self, add=None, patch=None, delete=None, getr=None, url=None, log=None, inter=None):
+    def __init__(self, add=None, patch=None, delete=None, getr=None, url=None, cred=None, log=None, inter=None):
         self.add = add
         self.patch = patch
         self.delete = delete
         self.getr = getr
         self.url = url
+        self.cred = cred
         self.log = log
         self.inter = inter
 
@@ -47,6 +49,14 @@ class TestParserMethods(unittest.TestCase):
         args = Args(url=["value"])
         self.parser.parse_args(args)
         self.assertEqual(config.load_sta_url(), "value/")
+
+    def test_url(self):
+        config.remove("STA_USR")
+        config.remove("STA_PWD")
+        self.assertEqual(config.load_authentication(), None)
+        args = Args(cred=["username", "password"])
+        self.parser.parse_args(args)
+        self.assertEqual(config.load_authentication(), requests.auth.HTTPBasicAuth("username", "password"))
 
     @mock.patch("stapy.sta.post.Post.entity")
     def test_add(self, mocked_post):

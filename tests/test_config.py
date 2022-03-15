@@ -49,9 +49,11 @@ class TestConfigMethods(unittest.TestCase):
 
     def test_log_lvl(self):
         config.remove("LOG_LVL")
-        self.assertEqual(config.load_log_lvl(), None)
-        set_log_level("WARNING")
-        self.assertEqual(config.load_log_lvl(), "WARNING")
+        self.assertEqual(config.load_log_lvl(), 30)
+        set_log_level("INFO")
+        self.assertEqual(config.load_log_lvl(), 30)
+        set_log_level(20)
+        self.assertEqual(config.load_log_lvl(), 20)
 
     def test_set_sta_url(self):
         before = config.load_sta_url()

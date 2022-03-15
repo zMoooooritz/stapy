@@ -196,5 +196,4 @@ class Post(AbstractRequest):
         ent.set_param(**params)
         payload = ent.get_data()
         path = Query(entity).get_query()
-        logging.critical("das ist meine log msg")
         return Post.send_request(Request.POST, path, payload)

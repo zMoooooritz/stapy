@@ -2,6 +2,8 @@ import logging
 import requests
 import configparser
 
+from stapy.common.log import DEFAULT_LOG_LEVEL
+
 FILENAME = ".stapy.ini"
 
 class Config:
@@ -41,7 +43,11 @@ class Config:
             return False
 
     def load_log_lvl(self):
-        return self.get("LOG_LVL")
+        try: 
+            log_lvl = int(self.get("LOG_LVL"))
+        except (ValueError, TypeError):
+            log_lvl = DEFAULT_LOG_LEVEL
+        return log_lvl
 
     def load_sta_url(self):
         sta_url = self.get("STA_URL")
