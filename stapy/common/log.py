@@ -1,6 +1,8 @@
 import logging
 from enum import Enum
 
+DEFAULT_LOG_LEVEL = logging.WARNING
+
 class Log(Enum):
     """
     An Enum that represents all available log levels
@@ -24,7 +26,7 @@ class Log(Enum):
         except KeyError:
             return Log.NOTSET
 
-def create_logger(level = None):
+def setup_logger(level = None):
     """
     Create a basic logger with some special settings
     :param level: the level of log to use

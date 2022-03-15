@@ -1,7 +1,6 @@
 
 from stapy.sta.abstract_entity import AbstractEntity
 
-# TODO HistoricalLocations
 class Thing(AbstractEntity):
     entry_map = {
         "name": (True, True, str),

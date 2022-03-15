@@ -33,7 +33,7 @@ class TestQueryMethods(unittest.TestCase):
         self.query = Query(Entity.Datastream)
         self.query_alt = Query(Entity.Datastream)
         self.da = Entity.Datastream
-        self.STA_URL = config.get("STA_URL")
+        self.STA_URL = config.load_sta_url()
 
     def test_entities(self):
         self.assertEqual(self.query.get_query(), self.STA_URL + "Datastreams")
@@ -127,7 +127,7 @@ class TestExpandMethods(unittest.TestCase):
     def setUp(self):
         self.expand = Expand(Entity.Observation)
 
-        self.STA_URL = config.get("STA_URL")
+        self.STA_URL = config.load_sta_url()
 
     def test_entities(self):
         self.assertEqual(self.expand.get_expand(), "Observations")

@@ -1,6 +1,6 @@
 import logging
 
-from stapy.common.log import create_logger
+from stapy.common.log import setup_logger
 from stapy.common.config import config
 from stapy.cli.parser import Parser
 
@@ -11,7 +11,7 @@ def main():
 
     parser = Parser()
 
-    create_logger(parser.get_log_level())
+    setup_logger(parser.get_log_level())
 
     logging.info("starting application")
 

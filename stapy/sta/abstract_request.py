@@ -66,12 +66,8 @@ class AbstractRequest(metaclass=abc.ABCMeta):
         else:
             raise Exception("Invalid request type")
 
-        api_usr = config.get("STA_USR")
-        api_pwd = config.get("STA_PWD")
-        if api_usr != "" and api_pwd != "":
-            response = request_method(path, json=payload, auth=requests.auth.HTTPBasicAuth(api_usr, api_pwd))
-        else:
-            response = request_method(path, json=payload)
+        auth = config.load_authentication()
+        response = request_method(path, json=payload, auth=auth)
 
         if not response.ok:
             if "message" in response.json():

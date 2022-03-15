@@ -14,7 +14,7 @@ def mocked_query_request(*args, **kwargs):
 class TestDeleteMethods(unittest.TestCase):
 
     def setUp(self):
-        self.STA_URL = config.get("STA_URL")
+        self.STA_URL = before = config.load_sta_url()
 
     @mock.patch("requests.delete")
     def test_entity(self, mocked_delete):

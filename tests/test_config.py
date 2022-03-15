@@ -1,8 +1,9 @@
 import os
 import logging
+import requests
 import unittest
 
-from stapy.common.config import config, Config, set_sta_url
+from stapy.common.config import config, Config, set_log_level, set_sta_url, set_credentials
 
 logging.disable(logging.CRITICAL)
 
@@ -14,7 +15,7 @@ class TestConfigMethods(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.url = config.get("sta_url")
+        cls.url = config.load_sta_url()
 
     def setUp(self):
         os.mknod(self.filename)
@@ -44,18 +45,35 @@ class TestConfigMethods(unittest.TestCase):
         self.config.set(var={"test": "test"})
         self.assertEqual(self.config.get("test"), "testing")
         self.assertEqual(self.config.get("var"), str({"test": "test"}))
-        self.assertEqual(self.config.get("xyz"), "")
+        self.assertEqual(self.config.get("xyz"), None)
+
+    def test_log_lvl(self):
+        config.remove("LOG_LVL")
+        self.assertEqual(config.load_log_lvl(), 30)
+        set_log_level("INFO")
+        self.assertEqual(config.load_log_lvl(), 30)
+        set_log_level(20)
+        self.assertEqual(config.load_log_lvl(), 20)
 
     def test_set_sta_url(self):
-        before = config.get("STA_URL")
+        before = config.load_sta_url()
         set_sta_url(10)
-        after = config.get("STA_URL")
+        after = config.load_sta_url()
         self.assertEqual(before, after)
         set_sta_url("localhost:8080/FROST-Server/v1.1")
-        first = config.get("STA_URL")
+        first = config.load_sta_url()
         set_sta_url("localhost:8080/FROST-Server/v1.1/")
-        second = config.get("STA_URL")
+        second = config.load_sta_url()
         self.assertEqual(first, second)
+
+    def test_credentials(self):
+        config.remove("STA_USR")
+        config.remove("STA_PWD")
+        self.assertEqual(config.load_authentication(), None)
+        usr = "username"
+        pwd = "password"
+        set_credentials(usr, pwd)
+        self.assertEqual(config.load_authentication(), requests.auth.HTTPBasicAuth(usr, pwd))
 
 
 if __name__ == "__main__":
