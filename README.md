@@ -28,7 +28,8 @@ At first it is necessary to set the URL of the STA.
 Optionally it is also possible to set credentials for a basic authentication.
 Within the CLI this can be achieved as follows:
 ```bash
-stapy -u {URL} ({USR} {PWD})
+stapy -u {URL}
+stapy -c {USR} {PWD}
 ```
 `stapy` can of course be also run as a Python module(`python -m stapy`)
 \
