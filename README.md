@@ -93,4 +93,4 @@ Some examples are select, filter, orderby and skip. These can be chained togethe
 Further use-cases and applications can be found in the [examples](https://github.com/zMoooooritz/stapy/tree/master/examples).
 
 ## Development
-To build this project, run `python setup.py build`. To execute the unit tests, run `python setup.py test`
+To build this project, run `python setup.py build`. To execute the unit tests, run `python setup.py test`.
