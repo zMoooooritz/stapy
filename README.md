@@ -13,7 +13,7 @@ For more (advanced) information about the SensorThings API see the official OGC 
 
 ## Installation
 
-`stapy` is compatible with Python 3.6+ and the recommended way to install is via [pip](https://pip.pypa.io/en/stable/)
+`stapy` is compatible with Python 3.7+ and the recommended way to install is via [pip](https://pip.pypa.io/en/stable/)
 ```bash
 pip install stapy
 ```
