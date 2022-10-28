@@ -58,7 +58,7 @@ setup(
     packages=find_packages(exclude=["docs", "tests*"]),
     install_requires=install_requires,
     test_suite="setup.test_suite",
-    python_requires=">=3.7,<=3.10",
+    python_requires=">=3.7",
     classifiers=classifiers.splitlines(),
     entry_points={
         "console_scripts": [
