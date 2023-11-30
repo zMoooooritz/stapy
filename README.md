@@ -2,10 +2,14 @@
 [![Latest Release](https://img.shields.io/github/release/zMoooooritz/stapy.svg)](https://github.com/zMoooooritz/stapy/releases)
 [![Build Status](https://github.com/zMoooooritz/stapy/workflows/build/badge.svg)](https://github.com/zMoooooritz/stapy/actions)
 [![Python Version](https://img.shields.io/pypi/pyversions/stapy.svg)](https://pypi.org/project/stapy/)
-[![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/zMoooooritz/stapy.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/zMoooooritz/stapy/context:python)
 [![Codecov](https://codecov.io/gh/zMoooooritz/stapy/branch/master/graph/badge.svg?token=04D52OK2H4)](https://codecov.io/github/zMoooooritz/stapy?branch=master)
 
 This is an easy to use SensorThings API Client written in Python
+
+> [!IMPORTANT]
+> This project is no longer being actively maintained.
+> Since the STA standard keeps evolving, the feature set of this client implementation will keep falling behind.
+> However the project [Frost-Python-Client](https://github.com/FraunhoferIOSB/FROST-Python-Client) is actively maintained and provides a seemingly complete API.
 
 The SensorThings API (STA) is an [OGC](https://www.osgeo.org/partners/ogc/) standard for IoT device sensing data.\
 A server implementation of the STA can be found here [FROST](https://github.com/FraunhoferIOSB/FROST-Server).\
@@ -41,7 +45,6 @@ The URL and credentials can also be set from within a Python script:
 >>> stapy.set_sta_url({URL})
 >>> stapy.set_credentials({USR}, {PWD})
 ```
-
 
 ### CLI - Interactive
 
